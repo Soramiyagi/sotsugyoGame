@@ -10,7 +10,7 @@ public class SwapObjectFinder2D : MonoBehaviour
         // Fキーでswapオブジェクトの位置を保存
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Vector2 center = (Vector2)transform.position + Vector2.up;
+            Vector2 center = (Vector2)transform.position + Vector2.up * 2;
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius);
 
             GameObject nearestSwap = null;
@@ -64,7 +64,7 @@ public class SwapObjectFinder2D : MonoBehaviour
     // 可視化（シーンビュー用）
     private void OnDrawGizmosSelected()
     {
-        Vector2 center = (Vector2)transform.position + Vector2.up;
+        Vector2 center = (Vector2)transform.position + Vector2.up * 2;
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(center, radius);
     }

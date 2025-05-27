@@ -22,13 +22,23 @@ public class PlayerController : MonoBehaviour
     private bool canAttack = true;
     public float attackCooldown = 0.5f;
 
+    public Collider2D attackColliderFront;
+    public Collider2D attackColliderUp;
+    public Collider2D attackColliderDown;
+
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        
+
+        // 子オブジェクトのコリジョン取得
+        attackColliderFront = transform.Find("AttackColliderFront").GetComponent<Collider2D>();
+        attackColliderUp = transform.Find("AttackColliderUp").GetComponent<Collider2D>();
+        attackColliderDown = transform.Find("AttackColliderDown").GetComponent<Collider2D>();
+
+
     }
 
     void Update()
@@ -51,10 +61,12 @@ public class PlayerController : MonoBehaviour
                 if (verticalInput > 0.1f)
                 {
                     animator.SetTrigger("AttackUp");
+                    StartCoroutine(EnableAttackCollider(attackColliderUp));
                 }
                 else
                 {
                     animator.SetTrigger("Attack");
+                    StartCoroutine(EnableAttackCollider(attackColliderFront));
                 }
             }
             else
@@ -62,16 +74,17 @@ public class PlayerController : MonoBehaviour
                 if (verticalInput > 0.1f)
                 {
                     animator.SetTrigger("AirAttackUp");
-                    Debug.Log("adda");
+                    StartCoroutine(EnableAttackCollider(attackColliderUp));
                 }
                 else if (verticalInput < -0.1f)
                 {
                     animator.SetTrigger("AirAttackDown");
-                    StartCoroutine(LowerPositionCoroutine());
+                    StartCoroutine(EnableAttackCollider(attackColliderDown));
                 }
                 else
                 {
                     animator.SetTrigger("AirAttack");
+                    StartCoroutine(EnableAttackCollider(attackColliderFront));
                 }
             }
 
@@ -162,13 +175,12 @@ public class PlayerController : MonoBehaviour
         canAttack = true;
     }
 
-    private IEnumerator LowerPositionCoroutine()
+    private IEnumerator EnableAttackCollider(Collider2D collider)
     {
-        Vector2 originalPosition = rb.position;
-        rb.position = new Vector2(originalPosition.x, originalPosition.y - 0.3f);
-        yield return new WaitForSeconds(0.45f);
-        rb.position = originalPosition;
-        Debug.Log("aa");
+        collider.enabled = true;
+        yield return new WaitForSeconds(0.2f); // 当たり判定を出す時間（必要に応じて調整）
+        collider.enabled = false;
     }
+
 }
 

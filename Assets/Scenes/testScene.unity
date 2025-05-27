@@ -1386,11 +1386,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: 283c8286ff7f8a74082557772d9afce2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 63.15
+      value: 63.16
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: 283c8286ff7f8a74082557772d9afce2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 35.92
+      value: 36.04
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: 283c8286ff7f8a74082557772d9afce2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2217,12 +2217,12 @@ GameObject:
   - component: {fileID: 263546628}
   - component: {fileID: 263546629}
   m_Layer: 0
-  m_Name: DownAttackColision
+  m_Name: attackColliderDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &263546628
 Transform:
   m_ObjectHideFlags: 0
@@ -2232,7 +2232,7 @@ Transform:
   m_GameObject: {fileID: 263546627}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2, y: -0.4, z: 0}
+  m_LocalPosition: {x: -0.2, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2270,7 +2270,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.19989796, y: 0.23674129}
+  m_Offset: {x: 0.19989796, y: 0.25500757}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2281,7 +2281,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3884094, y: 0.28321782}
+  m_Size: {x: 0.3884094, y: 0.2466853}
   m_EdgeRadius: 0
 --- !u!1 &267742671
 GameObject:
@@ -6150,7 +6150,7 @@ GameObject:
   - component: {fileID: 880531111}
   - component: {fileID: 880531112}
   m_Layer: 0
-  m_Name: UpAttackColision
+  m_Name: attackColliderUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6165,7 +6165,7 @@ Transform:
   m_GameObject: {fileID: 880531110}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2, y: 0.3, z: 0}
+  m_LocalPosition: {x: -0.2, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8066,7 +8066,7 @@ GameObject:
   - component: {fileID: 992251944}
   - component: {fileID: 992251945}
   m_Layer: 0
-  m_Name: FrontAttackColision
+  m_Name: attackColliderFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8119,7 +8119,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.226268, y: 0.1949945}
+  m_Offset: {x: 0.226268, y: 0.3960415}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -8130,7 +8130,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3046425, y: 0.35247037}
+  m_Size: {x: 0.3046425, y: 0.3992256}
   m_EdgeRadius: 0
 --- !u!1 &1001396411
 GameObject:
@@ -11758,8 +11758,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.2}
-  m_Size: {x: 0.14, y: 0.4}
+  m_Offset: {x: -0.0023376464, y: 0.4010472}
+  m_Size: {x: 0.2896149, y: 0.40935144}
   m_Direction: 0
 --- !u!114 &1414173501
 MonoBehaviour:
@@ -11776,6 +11776,9 @@ MonoBehaviour:
   moveSpeed: 5
   jumpForce: 7
   attackCooldown: 0.5
+  attackColliderFront: {fileID: 992251945}
+  attackColliderUp: {fileID: 880531112}
+  attackColliderDown: {fileID: 263546629}
 --- !u!114 &1414173502
 MonoBehaviour:
   m_ObjectHideFlags: 0
