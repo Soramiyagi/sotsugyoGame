@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        
     }
 
     void Update()
@@ -66,6 +67,7 @@ public class PlayerController : MonoBehaviour
                 else if (verticalInput < -0.1f)
                 {
                     animator.SetTrigger("AirAttackDown");
+                    StartCoroutine(LowerPositionCoroutine());
                 }
                 else
                 {
@@ -158,6 +160,15 @@ public class PlayerController : MonoBehaviour
         canAttack = false;
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
+    }
+
+    private IEnumerator LowerPositionCoroutine()
+    {
+        Vector2 originalPosition = rb.position;
+        rb.position = new Vector2(originalPosition.x, originalPosition.y - 0.3f);
+        yield return new WaitForSeconds(0.45f);
+        rb.position = originalPosition;
+        Debug.Log("aa");
     }
 }
 
