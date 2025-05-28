@@ -22,9 +22,9 @@ public class PlayerController : MonoBehaviour
     private bool canAttack = true;
     public float attackCooldown = 0.5f;
 
-    public Collider2D attackColliderFront;
-    public Collider2D attackColliderUp;
-    public Collider2D attackColliderDown;
+    private Collider2D attackColliderFront;
+    private Collider2D attackColliderUp;
+    private Collider2D attackColliderDown;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
