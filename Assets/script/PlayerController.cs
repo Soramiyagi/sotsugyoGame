@@ -33,10 +33,18 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        // 子オブジェクトのコリジョン取得
-        attackColliderFront = transform.Find("AttackColliderFront").GetComponent<Collider2D>();
-        attackColliderUp = transform.Find("AttackColliderUp").GetComponent<Collider2D>();
-        attackColliderDown = transform.Find("AttackColliderDown").GetComponent<Collider2D>();
+        attackColliderFront = transform.Find("AttackColliderFront")?.GetComponent<Collider2D>();
+        attackColliderUp = transform.Find("AttackColliderUp")?.GetComponent<Collider2D>();
+        attackColliderDown = transform.Find("AttackColliderDown")?.GetComponent<Collider2D>();
+
+        if (attackColliderFront == null) Debug.LogError("AttackColliderFront not found!");
+        if (attackColliderUp == null) Debug.LogError("AttackColliderUp not found!");
+        if (attackColliderDown == null) Debug.LogError("AttackColliderDown not found!");
+
+        // 最初は全て無効化
+        if (attackColliderFront) attackColliderFront.enabled = false;
+        if (attackColliderUp) attackColliderUp.enabled = false;
+        if (attackColliderDown) attackColliderDown.enabled = false;
 
 
     }
