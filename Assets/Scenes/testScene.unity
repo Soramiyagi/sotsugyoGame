@@ -18282,6 +18282,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Attack
       objectReference: {fileID: 0}
+    - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
+      propertyPath: offset.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4976389001188806390, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: m_IsTrigger
       value: 1
