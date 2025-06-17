@@ -102,34 +102,39 @@ public class PlayerController : MonoBehaviour
         UpdateState(moveX);
         Flip(moveX);
         UpdateAnimation();
-       
     }
 
     void UpdateState(float moveX)
     {
+        Debug.Log(isGrounded);
         if (!isGrounded)
         {
             float vy = rb.velocity.y;
 
             if (vy > 0.1f)
             {
+                //Debug.Log("Rise");
                 CurrentState = PlayerState.JumpRise;
             }
             else if (vy < -0.1f)
             {
+                //Debug.Log("Fall");
                 CurrentState = PlayerState.JumpFall;
             }
             else
             {
+                //Debug.Log("Mid");
                 CurrentState = PlayerState.JumpMid;
             }
         }
         else if (Mathf.Abs(moveX) > 0.01f)
         {
+            //Debug.Log("Move");
             CurrentState = PlayerState.Moving;
         }
         else
         {
+            //Debug.Log("Idle");
             CurrentState = PlayerState.Idle;
         }
     }
@@ -161,9 +166,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        if ((collision.gameObject.CompareTag("Ground"))||(collision.gameObject.CompareTag("swap")))
+        if ((collision.gameObject.CompareTag("Ground")) || (collision.gameObject.CompareTag("swap")))
         {
             isGrounded = true;
         }
@@ -171,7 +176,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || (collision.gameObject.CompareTag("swap")))
         {
             isGrounded = false;
         }

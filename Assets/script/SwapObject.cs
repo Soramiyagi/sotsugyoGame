@@ -1,19 +1,22 @@
 using UnityEngine;
 
-public class SwapObjectFinder2D : MonoBehaviour
+public class SwapObject : MonoBehaviour
 {
     public float radius = 1.0f;
-    private Transform savedSwapTransform = null;
+    private bool swapReady = false;
+    private Vector3 swapObjPos;                 //入れ替え対象の位置
+    private GameObject nearestSwap = null;      //入れ替え対象そのもの
+    public Vector3 offset;
 
     void Update()
     {
         // Fキーでswapオブジェクトの位置を保存
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Vector2 center = (Vector2)transform.position + Vector2.up * 2;
+            Vector3 center = transform.position + offset;
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius);
 
-            GameObject nearestSwap = null;
+            nearestSwap = null;
             float nearestDistance = float.MaxValue;
 
             foreach (Collider2D collider in hitColliders)
@@ -31,7 +34,8 @@ public class SwapObjectFinder2D : MonoBehaviour
 
             if (nearestSwap != null)
             {
-                savedSwapTransform = nearestSwap.transform;
+                swapObjPos = nearestSwap.transform.position;
+                swapReady = true;
                 Debug.Log("保存されたswapオブジェクト: " + nearestSwap.name);
             }
             else
@@ -43,16 +47,17 @@ public class SwapObjectFinder2D : MonoBehaviour
         // Eキーで位置を入れ替え & 保存破棄
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (savedSwapTransform != null)
+            if (swapReady)
             {
-                Vector3 temp = transform.position;
-                transform.position = savedSwapTransform.position;
-                savedSwapTransform.position = temp;
+                Vector3 temp = transform.position + offset;
+                transform.position = swapObjPos;
+                nearestSwap.transform.position = temp;
 
                 Debug.Log("プレイヤーとswapオブジェクトの位置を入れ替えました。");
 
                 // 保存を破棄
-                savedSwapTransform = null;
+                nearestSwap = null;
+                swapReady = false;
             }
             else
             {
@@ -62,10 +67,10 @@ public class SwapObjectFinder2D : MonoBehaviour
     }
 
     // 可視化（シーンビュー用）
-    private void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
-        Vector2 center = (Vector2)transform.position + Vector2.up * 2;
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.cyan;
+        Vector3 center = transform.position + offset;
         Gizmos.DrawWireSphere(center, radius);
     }
 }
