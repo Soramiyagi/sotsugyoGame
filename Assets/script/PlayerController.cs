@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
 
+    public int maxHP = 100; // ★追加：最大HP
+    private int currentHP;   // ★追加：現在のHP
+
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool facingRight = true;
@@ -32,6 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        currentHP = maxHP; // ★追加：開始時にHPを満タンに
 
         attackColliderFront = transform.Find("AttackColliderFront")?.GetComponent<Collider2D>();
         attackColliderUp = transform.Find("AttackColliderUp")?.GetComponent<Collider2D>();
@@ -41,18 +45,14 @@ public class PlayerController : MonoBehaviour
         if (attackColliderUp == null) Debug.LogError("AttackColliderUp not found!");
         if (attackColliderDown == null) Debug.LogError("AttackColliderDown not found!");
 
-        // 最初は全て無効化
         if (attackColliderFront) attackColliderFront.enabled = false;
         if (attackColliderUp) attackColliderUp.enabled = false;
         if (attackColliderDown) attackColliderDown.enabled = false;
-
-
     }
 
     void Update()
     {
         float moveX = Input.GetAxis("Horizontal");
-
         rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
         }
+
         if (Input.GetMouseButtonDown(1) && canAttack)
         {
             float verticalInput = Input.GetAxisRaw("Vertical");
@@ -106,35 +107,23 @@ public class PlayerController : MonoBehaviour
 
     void UpdateState(float moveX)
     {
-        Debug.Log(isGrounded);
         if (!isGrounded)
         {
             float vy = rb.velocity.y;
 
             if (vy > 0.1f)
-            {
-                //Debug.Log("Rise");
                 CurrentState = PlayerState.JumpRise;
-            }
             else if (vy < -0.1f)
-            {
-                //Debug.Log("Fall");
                 CurrentState = PlayerState.JumpFall;
-            }
             else
-            {
-                //Debug.Log("Mid");
                 CurrentState = PlayerState.JumpMid;
-            }
         }
         else if (Mathf.Abs(moveX) > 0.01f)
         {
-            //Debug.Log("Move");
             CurrentState = PlayerState.Moving;
         }
         else
         {
-            //Debug.Log("Idle");
             CurrentState = PlayerState.Idle;
         }
     }
@@ -145,7 +134,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("JumpRise", CurrentState == PlayerState.JumpRise);
         animator.SetBool("JumpMid", CurrentState == PlayerState.JumpMid);
         animator.SetBool("JumpFall", CurrentState == PlayerState.JumpFall);
-        // Idleアニメーションは全てのジャンプがfalse、Movingがfalseのとき再生
     }
 
     void Flip(float moveX)
@@ -181,6 +169,7 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
     }
+
     private IEnumerator AttackCooldown()
     {
         canAttack = false;
@@ -191,9 +180,30 @@ public class PlayerController : MonoBehaviour
     private IEnumerator EnableAttackCollider(Collider2D collider)
     {
         collider.enabled = true;
-        yield return new WaitForSeconds(0.2f); // 当たり判定を出す時間（必要に応じて調整）
+        yield return new WaitForSeconds(0.2f);
         collider.enabled = false;
     }
 
+    // ★追加：当たり判定でHPを減らす
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Attack") || collision.CompareTag("SwapEnemy"))
+        {
+            TakeDamage(20); // ★被ダメージ量は必要に応じて変更
+        }
+    }
+
+    // ★追加：ダメージ処理
+    private void TakeDamage(int damage)
+    {
+        currentHP -= damage;
+        Debug.Log("Player took damage! HP: " + currentHP);
+
+        if (currentHP <= 0)
+        {
+            Debug.Log("Player is dead!");
+            Destroy(gameObject);
+        }
+    }
 }
 

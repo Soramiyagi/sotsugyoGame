@@ -21,7 +21,7 @@ public class SwapObject : MonoBehaviour
 
             foreach (Collider2D collider in hitColliders)
             {
-                if (collider.CompareTag("swap"))
+                if (collider.CompareTag("swap")|| collider.CompareTag("SwapEnemy"))
                 {
                     float distance = Vector2.Distance(transform.position, collider.transform.position);
                     if (distance < nearestDistance)
