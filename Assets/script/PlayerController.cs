@@ -29,6 +29,10 @@ public class PlayerController : MonoBehaviour
     private Collider2D attackColliderUp;
     private Collider2D attackColliderDown;
 
+    private bool isClimbing = false;
+    private bool onLadder = false;
+    public float climbSpeed = 3f; // ★梯子移動のスピード
+
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
     void Start()
@@ -53,19 +57,58 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         float moveX = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
+        float moveY = Input.GetAxis("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // 梯子に入っていて、↑または↓が押されたときだけClimb開始
+        if (onLadder && !isClimbing && Mathf.Abs(moveY) > 0.1f)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            isGrounded = false;
+            isClimbing = true;
+            rb.gravityScale = 0f;
+            rb.velocity = Vector2.zero; // 初期化
         }
+
+        if (isClimbing)
+        {
+            rb.gravityScale = 0f;
+            rb.velocity = new Vector2(moveX * moveSpeed, moveY * climbSpeed);
+
+            // ジャンプで梯子から離れる
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                isClimbing = false;
+                onLadder = false;
+                rb.gravityScale = 1f;
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            }
+        }
+        else
+        {
+            // 通常移動
+            rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
+
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                isGrounded = false;
+            }
+        }
+
+        // 梯子から出たとき（OnTriggerExit）でも保険的に解除
+        if (!onLadder && isClimbing)
+        {
+            isClimbing = false;
+            rb.gravityScale = 1f;
+        }
+
+        UpdateState(moveX);
+        Flip(moveX);
+        UpdateAnimation(moveX, moveY);
 
         if (Input.GetMouseButtonDown(1) && canAttack)
         {
             float verticalInput = Input.GetAxisRaw("Vertical");
 
-            if (isGrounded)
+            if (isGrounded || isClimbing) // 地上または梯子にいるとき
             {
                 if (verticalInput > 0.1f)
                 {
@@ -78,7 +121,7 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(EnableAttackCollider(attackColliderFront));
                 }
             }
-            else
+            else // 空中攻撃
             {
                 if (verticalInput > 0.1f)
                 {
@@ -99,11 +142,9 @@ public class PlayerController : MonoBehaviour
 
             StartCoroutine(AttackCooldown());
         }
-
-        UpdateState(moveX);
-        Flip(moveX);
-        UpdateAnimation();
     }
+
+
 
     void UpdateState(float moveX)
     {
@@ -128,12 +169,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void UpdateAnimation()
+    void UpdateAnimation(float moveX, float moveY)
     {
-        animator.SetBool("Moving", CurrentState == PlayerState.Moving);
-        animator.SetBool("JumpRise", CurrentState == PlayerState.JumpRise);
-        animator.SetBool("JumpMid", CurrentState == PlayerState.JumpMid);
-        animator.SetBool("JumpFall", CurrentState == PlayerState.JumpFall);
+        if (isClimbing)
+        {
+            // 梯子アニメーションだけON
+            bool isClimbMoving = Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveY) > 0.1f;
+            animator.SetBool("LadderMove", isClimbMoving);
+            animator.SetBool("LadderIdle", !isClimbMoving);
+
+            // ジャンプ・移動アニメーションはOFF
+            animator.SetBool("Moving", false);
+            animator.SetBool("JumpRise", false);
+            animator.SetBool("JumpMid", false);
+            animator.SetBool("JumpFall", false);
+        }
+        else
+        {
+            // 通常アニメーション
+            animator.SetBool("LadderMove", false);
+            animator.SetBool("LadderIdle", false);
+
+            animator.SetBool("Moving", CurrentState == PlayerState.Moving);
+            animator.SetBool("JumpRise", CurrentState == PlayerState.JumpRise);
+            animator.SetBool("JumpMid", CurrentState == PlayerState.JumpMid);
+            animator.SetBool("JumpFall", CurrentState == PlayerState.JumpFall);
+        }
     }
 
     void Flip(float moveX)
@@ -185,11 +246,25 @@ public class PlayerController : MonoBehaviour
     }
 
     // ★追加：当たり判定でHPを減らす
+    // ★Ladderの当たり判定
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.CompareTag("Ladder"))
+        {
+            onLadder = true;
+        }
+
         if (collision.CompareTag("Attack") || collision.CompareTag("SwapEnemy"))
         {
-            TakeDamage(20); // ★被ダメージ量は必要に応じて変更
+            TakeDamage(20);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            onLadder = false;
         }
     }
 

@@ -8,6 +8,8 @@ TagManager:
   - swap
   - Attack
   - SwapEnemy
+  - New tag
+  - Ladder
   layers:
   - Default
   - TransparentFX
