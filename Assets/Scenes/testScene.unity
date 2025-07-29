@@ -17169,8 +17169,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 868198137}
-  fixedY: 38
   zOffset: -10
+  verticalRange: 2
 --- !u!1 &1897197104
 GameObject:
   m_ObjectHideFlags: 0
