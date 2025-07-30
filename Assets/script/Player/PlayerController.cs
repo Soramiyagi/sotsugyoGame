@@ -34,6 +34,13 @@ public class PlayerController : MonoBehaviour
     public float climbSpeed = 3f; // ★梯子移動のスピード
 
 
+    //リスポーン関連
+    public Transform respawnPoint; // インスペクターで設定
+    private bool isRespawning = false;
+
+    //フェードイン演出
+    [SerializeField] private FadeScript fadeScript;
+
 
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
@@ -58,6 +65,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+        if (isRespawning) return;
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
@@ -260,6 +269,10 @@ public class PlayerController : MonoBehaviour
         {
             TakeDamage(20);
         }
+        if (collision.CompareTag("Checkpoint"))
+        {
+            respawnPoint = collision.transform;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -273,15 +286,42 @@ public class PlayerController : MonoBehaviour
     // ★追加：ダメージ処理
     private void TakeDamage(int damage)
     {
+        if (isRespawning) return;
+
         currentHP -= damage;
         Debug.Log("Player took damage! HP: " + currentHP);
 
         if (currentHP <= 0)
         {
-            Debug.Log("Player is dead!");
-            Destroy(gameObject);
+            StartCoroutine(Respawn());
         }
     }
+
+    //リスポーン処理
+    private IEnumerator Respawn()
+    {
+        isRespawning = true;
+
+        yield return StartCoroutine(fadeScript.FadeOut());
+        // 操作を無効に（速度ゼロ、重力無効なども必要なら追加）
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        GetComponent<Collider2D>().enabled = false;
+
+        animator.SetTrigger("Die"); // 死亡アニメ再生したい場合
+
+        yield return new WaitForSeconds(1f); // 1秒待機
+
+        // 復帰処理
+        transform.position = respawnPoint.position;
+        currentHP = maxHP;
+
+        rb.isKinematic = false;
+        GetComponent<Collider2D>().enabled = true;
+        yield return StartCoroutine(fadeScript.FadeIn());
+        isRespawning = false;
+    }
+
     public float PerHP
     {
         get

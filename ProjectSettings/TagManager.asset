@@ -10,6 +10,7 @@ TagManager:
   - SwapEnemy
   - New tag
   - Ladder
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
