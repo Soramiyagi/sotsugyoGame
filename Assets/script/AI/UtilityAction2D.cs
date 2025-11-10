@@ -11,7 +11,8 @@ public abstract class UtilityAction2D
 
         float total = 1f;
         foreach (var c in considerations)
-            total *= c.Score(ctx); // 各要素のスコアを掛け合わせ
+            total *= Mathf.Clamp01(c.Score(ctx));
+
         return total;
     }
 

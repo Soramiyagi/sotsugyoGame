@@ -1,11 +1,15 @@
 using UnityEngine;
 
+
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyContext2D : MonoBehaviour
 {
     public Transform player;
     public float moveSpeed = 3f;
-    public float attackRange = 1.5f;
+    public float attackRange = 15f;
+    public EnemyBoomerangShooter boomerangShooter;
+
     [HideInInspector] public Rigidbody2D rb;
 
     void Awake()
@@ -25,4 +29,5 @@ public class EnemyContext2D : MonoBehaviour
         return (player.position - transform.position).normalized;
     }
 }
+
 

@@ -11,17 +11,14 @@ public class ChaseAction2D : UtilityAction2D
     {
         Vector2 dir = ctx.DirectionToPlayer();
         Vector2 targetVelocity = dir * ctx.moveSpeed;
-
-        // x方向のみ移動
-        targetVelocity.y = ctx.rb.velocity.y;
-
+        targetVelocity.y = ctx.rb.velocity.y; // 重力維持
         ctx.rb.velocity = Vector2.Lerp(ctx.rb.velocity, targetVelocity, 0.1f);
     }
 }
 
 public class DistanceFarConsideration : IConsideration2D
 {
-    public float maxDistance = 8f;
+    public float maxDistance = 15f;
 
     public float Score(EnemyContext2D ctx)
     {
@@ -29,4 +26,3 @@ public class DistanceFarConsideration : IConsideration2D
         return Mathf.Clamp01(dist / maxDistance); // 遠いほどスコアが高い
     }
 }
-
