@@ -376,6 +376,71 @@ Transform:
   - {fileID: 267742672}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -8.001}
+--- !u!1001 &54329118
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3091103816404367045, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3091103816404367045, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: InitialModule.gravitySource
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 67.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 38.587658
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363531000059103210, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9048577567042440302, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+      propertyPath: m_Name
+      value: VFX_2D_Charge_02
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
 --- !u!1 &75912155
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,7 +2062,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &223733728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6580,7 +6645,7 @@ GameObject:
   - component: {fileID: 893846077}
   - component: {fileID: 893846076}
   - component: {fileID: 893846075}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9328,7 +9393,7 @@ GameObject:
   - component: {fileID: 1078158011}
   - component: {fileID: 1078158010}
   - component: {fileID: 1078158009}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: swapImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13540,7 +13605,7 @@ GameObject:
   - component: {fileID: 1393037974}
   - component: {fileID: 1393037976}
   - component: {fileID: 1393037975}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13783,7 +13848,7 @@ GameObject:
   - component: {fileID: 1455073464}
   - component: {fileID: 1455073466}
   - component: {fileID: 1455073465}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14290,7 +14355,7 @@ GameObject:
   - component: {fileID: 1537285919}
   - component: {fileID: 1537285918}
   - component: {fileID: 1537285920}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14795,7 +14860,7 @@ GameObject:
   - component: {fileID: 1556242220}
   - component: {fileID: 1556242219}
   - component: {fileID: 1556242218}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21469,6 +21534,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
+      propertyPath: swapEffect
+      value: 
+      objectReference: {fileID: 9048577567042440302, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+    - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: indicatorObject
       value: 
       objectReference: {fileID: 1078158008}
@@ -21704,3 +21773,4 @@ SceneRoots:
   - {fileID: 1369585249}
   - {fileID: 968321231}
   - {fileID: 223733733}
+  - {fileID: 54329118}

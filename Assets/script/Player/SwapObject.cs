@@ -54,8 +54,11 @@ public class SwapObject : MonoBehaviour
                 // ★ エフェクトを出す
                 if (swapEffect != null)
                 {
-                    Instantiate(swapEffect, swapObjPos, Quaternion.identity);
+                    Vector3 pos = swapObjPos;
+                    pos.z = -5f; // ★絶対に見える場所に強制
+                    Instantiate(swapEffect, pos, Quaternion.identity);
                 }
+
 
                 Vector3 temp = transform.position + offset;
                 transform.position = swapObjPos;
