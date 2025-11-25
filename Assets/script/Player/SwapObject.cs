@@ -4,11 +4,13 @@ public class SwapObject : MonoBehaviour
 {
     public float radius = 1.0f;
     public Vector3 offset;
-    public GameObject indicatorObject;  // ★追加：表示制御対象
+    public GameObject indicatorObject;
 
     private bool swapReady = false;
     private Vector3 swapObjPos;
     private GameObject nearestSwap = null;
+
+    private bool isSlow = false;
 
     void Update()
     {
@@ -38,16 +40,14 @@ public class SwapObject : MonoBehaviour
             {
                 swapObjPos = nearestSwap.transform.position;
                 swapReady = true;
-                Debug.Log("保存されたswapオブジェクト: " + nearestSwap.name);
             }
             else
             {
                 swapReady = false;
-                Debug.Log("swapタグのオブジェクトが見つかりませんでした。");
             }
         }
 
-        // Eキーで位置を入れ替え & 保存破棄
+        // Eキーで位置を入れ替え
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (swapReady && nearestSwap != null)
@@ -56,26 +56,34 @@ public class SwapObject : MonoBehaviour
                 transform.position = swapObjPos;
                 nearestSwap.transform.position = temp;
 
-                Debug.Log("プレイヤーとswapオブジェクトの位置を入れ替えました。");
+                // ★ 実時間でスロー
+                StartCoroutine(SlowTimeFor(0.5f));  // ← 好きな時間（秒）
 
-                // 保存を破棄
                 nearestSwap = null;
                 swapReady = false;
             }
-            else
-            {
-                Debug.Log("保存されたswapオブジェクトがありません。Fキーで先に保存してください。");
-            }
         }
 
-        // ★ swapReady に応じて indicatorObject の表示切替
         if (indicatorObject != null)
         {
             indicatorObject.SetActive(swapReady);
         }
     }
 
-    // 可視化（シーンビュー用）
+    // 実時間でスローを戻すコルーチン
+    private System.Collections.IEnumerator SlowTimeFor(float duration)
+    {
+        Time.timeScale = 0.1f;  // 超スロー
+        float start = Time.unscaledTime;
+
+        while (Time.unscaledTime < start + duration)
+        {
+            yield return null;
+        }
+
+        Time.timeScale = 1.0f;
+    }
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;

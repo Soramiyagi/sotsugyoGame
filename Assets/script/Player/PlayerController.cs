@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
         if (attackColliderFront) attackColliderFront.enabled = false;
         if (attackColliderUp) attackColliderUp.enabled = false;
         if (attackColliderDown) attackColliderDown.enabled = false;
+
+       
     }
 
     void Update()
@@ -331,5 +333,6 @@ public class PlayerController : MonoBehaviour
         }
         private set { }
     }
+
 }
 
