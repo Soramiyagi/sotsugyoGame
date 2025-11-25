@@ -165,9 +165,9 @@ public class PlayerController : MonoBehaviour
         {
             float vy = rb.velocity.y;
 
-            if (vy > 0.1f)
+            if (vy > 1.5f)
                 CurrentState = PlayerState.JumpRise;
-            else if (vy < -0.1f)
+            else if (vy < -1.5f)
                 CurrentState = PlayerState.JumpFall;
             else
                 CurrentState = PlayerState.JumpMid;
