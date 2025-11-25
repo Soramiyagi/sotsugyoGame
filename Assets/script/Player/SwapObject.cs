@@ -5,12 +5,11 @@ public class SwapObject : MonoBehaviour
     public float radius = 1.0f;
     public Vector3 offset;
     public GameObject indicatorObject;
+    public GameObject swapEffect;  // ★追加：入れ替え先エフェクト
 
     private bool swapReady = false;
     private Vector3 swapObjPos;
     private GameObject nearestSwap = null;
-
-    private bool isSlow = false;
 
     void Update()
     {
@@ -47,17 +46,23 @@ public class SwapObject : MonoBehaviour
             }
         }
 
-        // Eキーで位置を入れ替え
+        // Eキーで入れ替え
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (swapReady && nearestSwap != null)
             {
+                // ★ エフェクトを出す
+                if (swapEffect != null)
+                {
+                    Instantiate(swapEffect, swapObjPos, Quaternion.identity);
+                }
+
                 Vector3 temp = transform.position + offset;
                 transform.position = swapObjPos;
                 nearestSwap.transform.position = temp;
 
                 // ★ 実時間でスロー
-                StartCoroutine(SlowTimeFor(0.5f));  // ← 好きな時間（秒）
+                StartCoroutine(SlowTimeFor(0.5f));
 
                 nearestSwap = null;
                 swapReady = false;
@@ -70,10 +75,10 @@ public class SwapObject : MonoBehaviour
         }
     }
 
-    // 実時間でスローを戻すコルーチン
+    // 実時間でスローを戻す
     private System.Collections.IEnumerator SlowTimeFor(float duration)
     {
-        Time.timeScale = 0.1f;  // 超スロー
+        Time.timeScale = 0.4f;
         float start = Time.unscaledTime;
 
         while (Time.unscaledTime < start + duration)
