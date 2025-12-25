@@ -14378,7 +14378,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6.25, y: 11.400024}
+  m_AnchoredPosition: {x: -6.25, y: 11.359985}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1537285918
@@ -21540,7 +21540,19 @@ PrefabInstance:
     - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: indicatorObject
       value: 
-      objectReference: {fileID: 1078158008}
+      objectReference: {fileID: 3492086563444611750, guid: b2c431acb9b218143b8416e693b6c63c, type: 3}
+    - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
+      propertyPath: activeSwapEffect
+      value: 
+      objectReference: {fileID: 9048577567042440302, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+    - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
+      propertyPath: swapEffectPrefab
+      value: 
+      objectReference: {fileID: 9048577567042440302, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+    - target: {fileID: 4269479534025660630, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
+      propertyPath: preSwapEffectPrefab
+      value: 
+      objectReference: {fileID: 3492086563444611750, guid: b2c431acb9b218143b8416e693b6c63c, type: 3}
     - target: {fileID: 4976389001188806390, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: m_IsTrigger
       value: 1

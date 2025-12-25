@@ -5,7 +5,11 @@ public class SwapObject : MonoBehaviour
     public float radius = 1.0f;
     public Vector3 offset;
     public GameObject indicatorObject;
-    public GameObject swapEffect;  // ★追加：入れ替え先エフェクト
+
+    public GameObject preSwapEffectPrefab;  // ← 選択中に出すエフェクト（A）
+    public GameObject swapEffectPrefab;     // ← 入れ替え瞬間のエフェクト（B）
+
+    public GameObject activeSwapEffect;     // ← A の実体（Inspectorは空にして）
 
     private bool swapReady = false;
     private Vector3 swapObjPos;
@@ -13,7 +17,7 @@ public class SwapObject : MonoBehaviour
 
     void Update()
     {
-        // Fキーでswapオブジェクトの位置を保存
+        // Fキー：入れ替え対象を選択
         if (Input.GetKeyDown(KeyCode.F))
         {
             Vector3 center = transform.position + offset;
@@ -22,15 +26,15 @@ public class SwapObject : MonoBehaviour
             nearestSwap = null;
             float nearestDistance = float.MaxValue;
 
-            foreach (Collider2D collider in hitColliders)
+            foreach (Collider2D col in hitColliders)
             {
-                if (collider.CompareTag("swap") || collider.CompareTag("SwapEnemy"))
+                if (col.CompareTag("swap") || col.CompareTag("SwapEnemy"))
                 {
-                    float distance = Vector2.Distance(transform.position, collider.transform.position);
-                    if (distance < nearestDistance)
+                    float dist = Vector2.Distance(transform.position, col.transform.position);
+                    if (dist < nearestDistance)
                     {
-                        nearestDistance = distance;
-                        nearestSwap = collider.gameObject;
+                        nearestDistance = dist;
+                        nearestSwap = col.gameObject;
                     }
                 }
             }
@@ -46,25 +50,30 @@ public class SwapObject : MonoBehaviour
             }
         }
 
-        // Eキーで入れ替え
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (swapReady && nearestSwap != null)
             {
-                // ★ エフェクトを出す
-                if (swapEffect != null)
+                // ★ 選択中エフェクト(A)を削除
+                if (activeSwapEffect != null)
                 {
-                    Vector3 pos = swapObjPos;
-                    pos.z = -5f; // ★絶対に見える場所に強制
-                    Instantiate(swapEffect, pos, Quaternion.identity);
+                    Destroy(activeSwapEffect);
+                    activeSwapEffect = null;
                 }
 
+                // ★ 入れ替え瞬間エフェクト(B)を出す
+                if (swapEffectPrefab != null)
+                {
+                    Vector3 effectPos = nearestSwap.transform.position; // 現在位置
+                    effectPos.y += 1f;
+                    Instantiate(swapEffectPrefab, effectPos, Quaternion.identity);
+                }
 
+                // ★ 入れ替え処理
                 Vector3 temp = transform.position + offset;
-                transform.position = swapObjPos;
+                transform.position = nearestSwap.transform.position; // 現在位置に入れ替え
                 nearestSwap.transform.position = temp;
 
-                // ★ 実時間でスロー
                 StartCoroutine(SlowTimeFor(0.5f));
 
                 nearestSwap = null;
@@ -72,13 +81,36 @@ public class SwapObject : MonoBehaviour
             }
         }
 
-        if (indicatorObject != null)
+        // ★選択中（swapReady = true）の間だけ A を表示
+        if (swapReady && nearestSwap != null)
         {
-            indicatorObject.SetActive(swapReady);
+            // 常に対象の現在位置を取得して y +1 にする
+            Vector3 pos = nearestSwap.transform.position;
+
+
+            // エフェクトがまだ生成されていなければ生成
+            if (activeSwapEffect == null && preSwapEffectPrefab != null)
+            {
+                activeSwapEffect = Instantiate(preSwapEffectPrefab, pos, Quaternion.identity);
+            }
+
+            // 生成済みなら毎フレーム位置更新して追従
+            if (activeSwapEffect != null)
+            {
+                activeSwapEffect.transform.position = pos;
+            }
+        }
+        else
+        {
+            if (activeSwapEffect != null)
+            {
+                Destroy(activeSwapEffect);
+                activeSwapEffect = null;
+            }
         }
     }
 
-    // 実時間でスローを戻す
+    // スロー戻す
     private System.Collections.IEnumerator SlowTimeFor(float duration)
     {
         Time.timeScale = 0.4f;
@@ -99,6 +131,3 @@ public class SwapObject : MonoBehaviour
         Gizmos.DrawWireSphere(center, radius);
     }
 }
-
-
-
