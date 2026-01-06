@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 2357572408707218417}
   - component: {fileID: 3551222119284377387}
   - component: {fileID: 6116234467227290953}
+  - component: {fileID: 8136210602554839173}
   m_Layer: 0
   m_Name: BoomerangMoveEnemy
   m_TagString: Untagged
@@ -218,7 +219,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 6
+  m_Constraints: 4
 --- !u!61 &6116234467227290953
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -264,3 +265,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.63454705, y: 0.7233086}
   m_EdgeRadius: 0
+--- !u!114 &8136210602554839173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7830853425657243547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d57588ae40df1604f941a7a122a237b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 60

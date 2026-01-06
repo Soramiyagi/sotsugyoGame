@@ -6,10 +6,10 @@ public class SwapObject : MonoBehaviour
     public Vector3 offset;
     public GameObject indicatorObject;
 
-    public GameObject preSwapEffectPrefab;  // ← 選択中に出すエフェクト（A）
-    public GameObject swapEffectPrefab;     // ← 入れ替え瞬間のエフェクト（B）
+    public GameObject preSwapEffectPrefab;  // 選択中エフェクト（A）
+    public GameObject swapEffectPrefab;     // 入れ替え瞬間エフェクト（B）
 
-    public GameObject activeSwapEffect;     // ← A の実体（Inspectorは空にして）
+    public GameObject activeSwapEffect;     // A の実体（Inspectorは空）
 
     private bool swapReady = false;
     private Vector3 swapObjPos;
@@ -17,84 +17,104 @@ public class SwapObject : MonoBehaviour
 
     void Update()
     {
-        // Fキー：入れ替え対象を選択
-        if (Input.GetKeyDown(KeyCode.F))
+        // ===== 入力判定（キーボード＋コントローラー）=====
+        bool targetInput =
+            Input.GetKeyDown(KeyCode.F) ||
+            Input.GetButtonDown("SwapTarget");
+
+        bool executeInput =
+            Input.GetKeyDown(KeyCode.E) ||
+            Input.GetButtonDown("SwapExecute");
+
+        // 入れ替え対象選択
+        if (targetInput)
         {
-            Vector3 center = transform.position + offset;
-            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius);
+            SelectSwapTarget();
+        }
 
-            nearestSwap = null;
-            float nearestDistance = float.MaxValue;
+        // 入れ替え実行
+        if (executeInput)
+        {
+            ExecuteSwap();
+        }
 
-            foreach (Collider2D col in hitColliders)
+        // 選択中エフェクト更新
+        UpdatePreSwapEffect();
+    }
+
+    // ===== 入れ替え対象選択 =====
+    void SelectSwapTarget()
+    {
+        Vector3 center = transform.position + offset;
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius);
+
+        nearestSwap = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (Collider2D col in hitColliders)
+        {
+            if (col.CompareTag("swap") || col.CompareTag("SwapEnemy"))
             {
-                if (col.CompareTag("swap") || col.CompareTag("SwapEnemy"))
+                float dist = Vector2.Distance(transform.position, col.transform.position);
+                if (dist < nearestDistance)
                 {
-                    float dist = Vector2.Distance(transform.position, col.transform.position);
-                    if (dist < nearestDistance)
-                    {
-                        nearestDistance = dist;
-                        nearestSwap = col.gameObject;
-                    }
+                    nearestDistance = dist;
+                    nearestSwap = col.gameObject;
                 }
-            }
-
-            if (nearestSwap != null)
-            {
-                swapObjPos = nearestSwap.transform.position;
-                swapReady = true;
-            }
-            else
-            {
-                swapReady = false;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        swapReady = nearestSwap != null;
+
+        if (swapReady)
         {
-            if (swapReady && nearestSwap != null)
-            {
-                // ★ 選択中エフェクト(A)を削除
-                if (activeSwapEffect != null)
-                {
-                    Destroy(activeSwapEffect);
-                    activeSwapEffect = null;
-                }
+            swapObjPos = nearestSwap.transform.position;
+        }
+    }
 
-                // ★ 入れ替え瞬間エフェクト(B)を出す
-                if (swapEffectPrefab != null)
-                {
-                    Vector3 effectPos = nearestSwap.transform.position; // 現在位置
-                    effectPos.y += 1f;
-                    Instantiate(swapEffectPrefab, effectPos, Quaternion.identity);
-                }
+    // ===== 入れ替え実行 =====
+    void ExecuteSwap()
+    {
+        if (!swapReady || nearestSwap == null) return;
 
-                // ★ 入れ替え処理
-                Vector3 temp = transform.position + offset;
-                transform.position = nearestSwap.transform.position; // 現在位置に入れ替え
-                nearestSwap.transform.position = temp;
-
-                StartCoroutine(SlowTimeFor(0.5f));
-
-                nearestSwap = null;
-                swapReady = false;
-            }
+        // 選択中エフェクト削除
+        if (activeSwapEffect != null)
+        {
+            Destroy(activeSwapEffect);
+            activeSwapEffect = null;
         }
 
-        // ★選択中（swapReady = true）の間だけ A を表示
+        // 入れ替え瞬間エフェクト
+        if (swapEffectPrefab != null)
+        {
+            Vector3 effectPos = nearestSwap.transform.position;
+            effectPos.y += 1f;
+            Instantiate(swapEffectPrefab, effectPos, Quaternion.identity);
+        }
+
+        // 入れ替え処理
+        Vector3 temp = transform.position + offset;
+        transform.position = nearestSwap.transform.position;
+        nearestSwap.transform.position = temp;
+
+        StartCoroutine(SlowTimeFor(0.5f));
+
+        nearestSwap = null;
+        swapReady = false;
+    }
+
+    // ===== 選択中エフェクト追従 =====
+    void UpdatePreSwapEffect()
+    {
         if (swapReady && nearestSwap != null)
         {
-            // 常に対象の現在位置を取得して y +1 にする
             Vector3 pos = nearestSwap.transform.position;
 
-
-            // エフェクトがまだ生成されていなければ生成
             if (activeSwapEffect == null && preSwapEffectPrefab != null)
             {
                 activeSwapEffect = Instantiate(preSwapEffectPrefab, pos, Quaternion.identity);
             }
 
-            // 生成済みなら毎フレーム位置更新して追従
             if (activeSwapEffect != null)
             {
                 activeSwapEffect.transform.position = pos;
@@ -110,7 +130,7 @@ public class SwapObject : MonoBehaviour
         }
     }
 
-    // スロー戻す
+    // ===== スロー演出 =====
     private System.Collections.IEnumerator SlowTimeFor(float duration)
     {
         Time.timeScale = 0.4f;
@@ -124,6 +144,7 @@ public class SwapObject : MonoBehaviour
         Time.timeScale = 1.0f;
     }
 
+    // ===== デバッグ表示 =====
     void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
@@ -131,3 +152,4 @@ public class SwapObject : MonoBehaviour
         Gizmos.DrawWireSphere(center, radius);
     }
 }
+

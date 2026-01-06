@@ -49,7 +49,7 @@ public class EnemyBoomerangShooter : MonoBehaviour
         isInRange = currentlyInRange;
     }
 
-    void TryShoot()
+    public void TryShoot()
     {
         if (isAttacking) return;
 
@@ -58,6 +58,11 @@ public class EnemyBoomerangShooter : MonoBehaviour
 
         // Åö î≠éÀÇ0.1ïbíxÇÁÇπÇÈ
         StartCoroutine(ShootAfterDelay(0.1f));
+    }
+
+    public void Shoot()
+    {
+        TryShoot();
     }
 
     IEnumerator ShootAfterDelay(float delay)
