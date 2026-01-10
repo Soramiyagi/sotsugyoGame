@@ -4,25 +4,31 @@ public class AdvancedRangedAction2D : AdvancedUtilityAction2D
 {
     public AdvancedRangedAction2D()
     {
-        considerations.Add(new RangedDistanceConsideration());
+        considerations.Add(new DistanceConsideration());
         considerations.Add(new HeightConsideration());
     }
 
     public override void Execute(AdvancedEnemyContext2D ctx)
     {
-        if (ctx.DistanceToPlayer() <= ctx.rangedRange && ctx.boomerangShooter != null)
+        if (ctx.IsAttacking) return;
+
+        float dist = ctx.DistanceToPlayer();
+
+        if (dist <= ctx.rangedRange && ctx.boomerangShooter != null)
         {
-            ctx.rb.velocity = new Vector2(0, ctx.rb.velocity.y);
-            ctx.boomerangShooter.Shoot(); // 公開メソッドを使用
+            Debug.Log("[AI] Ranged Execute 呼び出し");
+
+            ctx.rb.velocity = new Vector2(0f, ctx.rb.velocity.y);
+            ctx.boomerangShooter.Shoot();
         }
     }
 
-    class RangedDistanceConsideration : IAdvancedConsideration2D
+    class DistanceConsideration : IAdvancedConsideration2D
     {
         public float Score(AdvancedEnemyContext2D ctx)
         {
             float d = ctx.DistanceToPlayer();
-            return Mathf.Clamp01(d / ctx.rangedRange) * 1.3f;
+            return Mathf.Clamp01(d / ctx.rangedRange) * 1.5f;
         }
     }
 
@@ -30,8 +36,9 @@ public class AdvancedRangedAction2D : AdvancedUtilityAction2D
     {
         public float Score(AdvancedEnemyContext2D ctx)
         {
+            if (ctx.player == null) return 0f;
             float diff = ctx.player.position.y - ctx.transform.position.y;
-            return Mathf.Clamp01(diff / 3f) * 1.5f;
+            return Mathf.Clamp01(diff / 3f);
         }
     }
 }

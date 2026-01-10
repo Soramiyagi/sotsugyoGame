@@ -39,6 +39,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private FadeScript fadeScript;
 
+    private bool isInvincible;
+    [SerializeField] private float invincibleTime = 0.3f;
+
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
     void Start()
@@ -246,13 +249,28 @@ public class PlayerController : MonoBehaviour
             onLadder = false;
     }
 
-    private void TakeDamage(int damage)
+
+    public void TakeDamage(int damage)
     {
-        if (isRespawning) return;
+        if (isInvincible) return;
 
         currentHP -= damage;
+
         if (currentHP <= 0)
+        {
             StartCoroutine(Respawn());
+        }
+        else
+        {
+            StartCoroutine(InvincibleRoutine());
+        }
+    }
+
+    private IEnumerator InvincibleRoutine()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibleTime);
+        isInvincible = false;
     }
 
     private IEnumerator Respawn()

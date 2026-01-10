@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class AdvancedUtilityAction2D
 {
-    protected List<IAdvancedConsideration2D> considerations = new List<IAdvancedConsideration2D>();
+    protected List<IAdvancedConsideration2D> considerations = new();
 
     public float GetScore(AdvancedEnemyContext2D ctx)
     {
@@ -11,8 +11,9 @@ public abstract class AdvancedUtilityAction2D
 
         float score = 1f;
         foreach (var c in considerations)
+        {
             score *= Mathf.Clamp01(c.Score(ctx));
-
+        }
         return score;
     }
 

@@ -7,13 +7,13 @@ public class AdvancedUtilityAI2D : MonoBehaviour
     public AdvancedEnemyContext2D context;
     public Animator animator;
 
-    private List<AdvancedUtilityAction2D> actions = new List<AdvancedUtilityAction2D>();
+    private List<AdvancedUtilityAction2D> actions = new();
     private AdvancedUtilityAction2D currentAction;
 
     void Awake()
     {
         context = GetComponent<AdvancedEnemyContext2D>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
 
         actions.Add(new AdvancedChaseAction2D());
         actions.Add(new AdvancedMeleeAction2D());
@@ -24,26 +24,24 @@ public class AdvancedUtilityAI2D : MonoBehaviour
     {
         if (context.player == null) return;
 
-        var scores = new Dictionary<AdvancedUtilityAction2D, float>();
-        foreach (var action in actions)
-            scores[action] = action.GetScore(context);
-
-        var bestPair = scores.OrderByDescending(s => s.Value).First();
-        AdvancedUtilityAction2D best = bestPair.Key;
+        var best = actions
+            .Select(a => new { action = a, score = a.GetScore(context) })
+            .OrderByDescending(x => x.score)
+            .First().action;
 
         if (best != currentAction)
         {
             currentAction = best;
-            UpdateAnimationState(currentAction);
+            UpdateAnimation(best);
         }
 
-        currentAction?.Execute(context);
+        currentAction.Execute(context);
     }
 
-    void UpdateAnimationState(AdvancedUtilityAction2D action)
+    void UpdateAnimation(AdvancedUtilityAction2D action)
     {
-        animator.SetBool("IsMoving", false);
-        if (action is AdvancedChaseAction2D)
-            animator.SetBool("IsMoving", true);
+        if (animator == null) return;
+
+        animator.SetBool("IsMoving", action is AdvancedChaseAction2D);
     }
 }
