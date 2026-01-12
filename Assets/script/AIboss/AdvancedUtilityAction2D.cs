@@ -11,9 +11,8 @@ public abstract class AdvancedUtilityAction2D
 
         float score = 1f;
         foreach (var c in considerations)
-        {
             score *= Mathf.Clamp01(c.Score(ctx));
-        }
+
         return score;
     }
 

@@ -4,7 +4,7 @@ public class AdvancedChaseAction2D : AdvancedUtilityAction2D
 {
     public AdvancedChaseAction2D()
     {
-        considerations.Add(new DistanceFarConsideration());
+        considerations.Add(new DistanceFar());
     }
 
     public override void Execute(AdvancedEnemyContext2D ctx)
@@ -15,17 +15,14 @@ public class AdvancedChaseAction2D : AdvancedUtilityAction2D
         v.y = ctx.rb.velocity.y;
         ctx.rb.velocity = Vector2.Lerp(ctx.rb.velocity, v, 0.1f);
 
-        ctx.FaceByMoveDirection(ctx.rb.velocity.x);
+        ctx.FaceByMoveDirection(v.x);
     }
 
-    class DistanceFarConsideration : IAdvancedConsideration2D
+    class DistanceFar : IAdvancedConsideration2D
     {
-        public float maxDistance = 15f;
-
         public float Score(AdvancedEnemyContext2D ctx)
         {
-            float dist = ctx.DistanceToPlayer();
-            return Mathf.Clamp01(dist / maxDistance) * 0.6f;
+            return Mathf.Clamp01(ctx.DistanceToPlayer() / 10f) * 0.7f;
         }
     }
 }

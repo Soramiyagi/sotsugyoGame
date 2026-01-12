@@ -4,41 +4,35 @@ public class AdvancedRangedAction2D : AdvancedUtilityAction2D
 {
     public AdvancedRangedAction2D()
     {
-        considerations.Add(new DistanceConsideration());
-        considerations.Add(new HeightConsideration());
+        considerations.Add(new InRange());
+        considerations.Add(new Height());
     }
 
     public override void Execute(AdvancedEnemyContext2D ctx)
     {
         if (ctx.IsAttacking) return;
 
-        float dist = ctx.DistanceToPlayer();
-
-        if (dist <= ctx.rangedRange && ctx.boomerangShooter != null)
+        if (ctx.DistanceToPlayer() <= ctx.rangedRange)
         {
             Debug.Log("[AI] Ranged Execute ŒÄ‚Ño‚µ");
-
-            ctx.rb.velocity = new Vector2(0f, ctx.rb.velocity.y);
-            ctx.boomerangShooter.Shoot();
+            ctx.DoRangedAttack();
         }
     }
 
-    class DistanceConsideration : IAdvancedConsideration2D
+    class InRange : IAdvancedConsideration2D
     {
         public float Score(AdvancedEnemyContext2D ctx)
         {
-            float d = ctx.DistanceToPlayer();
-            return Mathf.Clamp01(d / ctx.rangedRange) * 1.5f;
+            return Mathf.Clamp01(ctx.DistanceToPlayer() / ctx.rangedRange) * 1.4f;
         }
     }
 
-    class HeightConsideration : IAdvancedConsideration2D
+    class Height : IAdvancedConsideration2D
     {
         public float Score(AdvancedEnemyContext2D ctx)
         {
-            if (ctx.player == null) return 0f;
             float diff = ctx.player.position.y - ctx.transform.position.y;
-            return Mathf.Clamp01(diff / 3f);
+            return Mathf.Clamp01(diff / 3f) * 1.3f;
         }
     }
 }

@@ -13,22 +13,15 @@ public class AdvancedEnemyContext2D : EnemyBase
     public float meleeRange = 2f;
     public float rangedRange = 8f;
 
-    [Tooltip("近接攻撃用コリジョン（子オブジェクト）")]
     public Collider2D meleeCollider;
-
-    [Tooltip("近接コリジョンの有効時間")]
-    public float meleeDuration = 0.2f;
-
-    [Tooltip("近接攻撃のクールタイム")]
-    public float meleeCooldown = 3f;
+    public float meleeDuration = 0.5f;
+    public float meleeCooldown = 10f;
 
     public EnemyBoomerangShooter boomerangShooter;
     public Transform firePoint;
 
     [Header("Facing (Pivot)")]
     public Transform flipPivot;
-
-    [Tooltip("ON = 元画像は左向き / OFF = 元画像は右向き")]
     public bool isLeftFacingDefault = true;
 
     [Header("Animation")]
@@ -36,21 +29,16 @@ public class AdvancedEnemyContext2D : EnemyBase
 
     [HideInInspector] public Rigidbody2D rb;
 
-    // ===== 内部状態 =====
     private bool facingLeft;
     private bool isAttacking;
-    private float lastMeleeTime = -999f; // ★ 追加
 
     public bool IsAttacking => isAttacking;
-
-    // =========================
 
     protected override void Start()
     {
         base.Start();
 
         rb = GetComponent<Rigidbody2D>();
-
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
@@ -60,10 +48,6 @@ public class AdvancedEnemyContext2D : EnemyBase
         if (meleeCollider != null)
             meleeCollider.enabled = false;
     }
-
-    // =========================
-    // 情報取得
-    // =========================
 
     public float DistanceToPlayer()
     {
@@ -76,10 +60,6 @@ public class AdvancedEnemyContext2D : EnemyBase
         if (player == null) return Vector2.zero;
         return (player.position - transform.position).normalized;
     }
-
-    // =========================
-    // 向き制御
-    // =========================
 
     public void FaceByMoveDirection(float moveX)
     {
@@ -98,9 +78,9 @@ public class AdvancedEnemyContext2D : EnemyBase
         float dir = facingLeft ? -1f : 1f;
         if (!isLeftFacingDefault) dir *= -1f;
 
-        Vector3 scale = flipPivot.localScale;
-        scale.x = Mathf.Abs(scale.x) * dir;
-        flipPivot.localScale = scale;
+        Vector3 s = flipPivot.localScale;
+        s.x = Mathf.Abs(s.x) * dir;
+        flipPivot.localScale = s;
 
         if (firePoint != null)
         {
@@ -110,20 +90,10 @@ public class AdvancedEnemyContext2D : EnemyBase
         }
     }
 
-    // =========================
-    // 近接攻撃（★連打完全防止）
-    // =========================
-
+    // ===== 近接攻撃 =====
     public void DoMeleeAttack()
     {
-        // ★ クールタイム判定（最重要）
-        if (Time.time < lastMeleeTime + meleeCooldown)
-            return;
-
-        if (isAttacking || meleeCollider == null)
-            return;
-
-        lastMeleeTime = Time.time;
+        if (isAttacking || meleeCollider == null) return;
 
         Debug.Log("[AI] DoMeleeAttack 開始");
 
@@ -136,7 +106,6 @@ public class AdvancedEnemyContext2D : EnemyBase
     private IEnumerator MeleeRoutine()
     {
         isAttacking = true;
-
         rb.velocity = new Vector2(0f, rb.velocity.y);
 
         Debug.Log("[AI] Melee Collider ON");
@@ -147,13 +116,11 @@ public class AdvancedEnemyContext2D : EnemyBase
         meleeCollider.enabled = false;
         Debug.Log("[AI] Melee Collider OFF");
 
+        yield return new WaitForSeconds(meleeCooldown);
         isAttacking = false;
     }
 
-    // =========================
-    // 遠距離攻撃（既存）
-    // =========================
-
+    // ===== 遠距離攻撃 =====
     public void DoRangedAttack()
     {
         if (isAttacking || boomerangShooter == null) return;
@@ -167,13 +134,12 @@ public class AdvancedEnemyContext2D : EnemyBase
             animator.SetTrigger("Ranged");
 
         boomerangShooter.Shoot();
-
-        StartCoroutine(RangedCooldown(0.5f));
+        StartCoroutine(RangedCooldown());
     }
 
-    private IEnumerator RangedCooldown(float t)
+    private IEnumerator RangedCooldown()
     {
-        yield return new WaitForSeconds(t);
+        yield return new WaitForSeconds(0.5f);
         isAttacking = false;
     }
 }

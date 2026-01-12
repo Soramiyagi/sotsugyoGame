@@ -63,6 +63,23 @@ public class EnemyBoomerangShooter : MonoBehaviour
     public void Shoot()
     {
         TryShoot();
+        Debug.Log("[Boomerang] Shoot() åƒÇŒÇÍÇΩ");
+
+        if (firePoint == null)
+        {
+            Debug.LogError("[Boomerang] firePoint Ç™ null");
+            return;
+        }
+
+        if (boomerangPrefab == null)
+        {
+            Debug.LogError("[Boomerang] prefab Ç™ null");
+            return;
+        }
+
+        Debug.Log("[Boomerang] Instantiate é¿çs");
+
+        Instantiate(boomerangPrefab, firePoint.position, Quaternion.identity);
     }
 
     IEnumerator ShootAfterDelay(float delay)

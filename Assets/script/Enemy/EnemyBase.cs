@@ -23,6 +23,16 @@ public class EnemyBase : MonoBehaviour
 
     public float HPRatio => (float)currentHP / maxHP;
 
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+ 
+
+        if (collision.CompareTag("Attack") )
+            TakeDamage(20);
+
+  
+    }
     public void TakeDamage(int damage)
     {
         currentHP -= damage;

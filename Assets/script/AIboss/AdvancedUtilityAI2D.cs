@@ -22,23 +22,29 @@ public class AdvancedUtilityAI2D : MonoBehaviour
 
     void Update()
     {
-        if (context.player == null) return;
+        if (context == null || context.player == null) return;
 
-        var best = actions
-            .Select(a => new { action = a, score = a.GetScore(context) })
-            .OrderByDescending(x => x.score)
-            .First().action;
+        var scores = new Dictionary<AdvancedUtilityAction2D, float>();
+        foreach (var a in actions)
+            scores[a] = a.GetScore(context);
+
+#if UNITY_EDITOR
+        foreach (var s in scores)
+            Debug.Log($"[AI SCORE] {s.Key.GetType().Name} : {s.Value:F2}");
+#endif
+
+        var best = scores.OrderByDescending(s => s.Value).First().Key;
 
         if (best != currentAction)
         {
             currentAction = best;
-            UpdateAnimation(best);
+            UpdateAnimationState(best);
         }
 
         currentAction.Execute(context);
     }
 
-    void UpdateAnimation(AdvancedUtilityAction2D action)
+    void UpdateAnimationState(AdvancedUtilityAction2D action)
     {
         if (animator == null) return;
 

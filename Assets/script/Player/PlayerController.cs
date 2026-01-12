@@ -40,9 +40,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FadeScript fadeScript;
 
     private bool isInvincible;
-    [SerializeField] private float invincibleTime = 0.3f;
+    [SerializeField] private float invincibleTime = 0.5f;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+
+   
 
     void Start()
     {
@@ -252,7 +254,11 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (isInvincible) return;
+        if (isInvincible || isRespawning) return;
+
+        // Åö Ç±Ç±Ç≈ë¶ ñ≥ìGäJén
+        isInvincible = true;
+        StartCoroutine(InvincibleRoutine());
 
         currentHP -= damage;
 
@@ -260,15 +266,10 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(Respawn());
         }
-        else
-        {
-            StartCoroutine(InvincibleRoutine());
-        }
     }
 
     private IEnumerator InvincibleRoutine()
     {
-        isInvincible = true;
         yield return new WaitForSeconds(invincibleTime);
         isInvincible = false;
     }

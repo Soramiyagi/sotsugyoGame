@@ -10306,7 +10306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boomerangPrefab: {fileID: 2241961760797302619, guid: c434ab716f58bb840a78226ec3992dcd, type: 3}
   firePoint: {fileID: 1316526032}
-  attackCooldown: 3
+  attackCooldown: 1
   attackRange: 15
 --- !u!114 &1167488719
 MonoBehaviour:
