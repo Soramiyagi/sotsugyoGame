@@ -1,8 +1,5 @@
 using UnityEngine;
 
-
-
-[RequireComponent(typeof(Rigidbody2D))]
 public class EnemyContext2D : MonoBehaviour
 {
     public Transform player;
@@ -11,10 +8,14 @@ public class EnemyContext2D : MonoBehaviour
     public EnemyBoomerangShooter boomerangShooter;
 
     [HideInInspector] public Rigidbody2D rb;
+    [HideInInspector] public SpriteRenderer spriteRenderer;
+
+    public Transform firePoint;   // Åö í«â¡
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public float DistanceToPlayer()
@@ -28,6 +29,8 @@ public class EnemyContext2D : MonoBehaviour
         if (player == null) return Vector2.zero;
         return (player.position - transform.position).normalized;
     }
+
 }
+
 
 

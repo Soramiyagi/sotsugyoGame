@@ -15,13 +15,14 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
 
-    public int maxHP = 100; // ★追加：最大HP
-    private int currentHP;   // ★追加：現在のHP
+    public int maxHP = 100;
+    private int currentHP;
 
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool facingRight = true;
     private Animator animator;
+
     private bool canAttack = true;
     public float attackCooldown = 0.5f;
 
@@ -31,32 +32,29 @@ public class PlayerController : MonoBehaviour
 
     private bool isClimbing = false;
     private bool onLadder = false;
-    public float climbSpeed = 3f; // ★梯子移動のスピード
+    public float climbSpeed = 3f;
 
-
-    //リスポーン関連
-    public Transform respawnPoint; // インスペクターで設定
+    public Transform respawnPoint;
     private bool isRespawning = false;
 
-    //フェードイン演出
     [SerializeField] private FadeScript fadeScript;
 
+    private bool isInvincible;
+    [SerializeField] private float invincibleTime = 0.5f;
 
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+
+   
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        currentHP = maxHP; // ★追加：開始時にHPを満タンに
+        currentHP = maxHP;
 
         attackColliderFront = transform.Find("AttackColliderFront")?.GetComponent<Collider2D>();
         attackColliderUp = transform.Find("AttackColliderUp")?.GetComponent<Collider2D>();
         attackColliderDown = transform.Find("AttackColliderDown")?.GetComponent<Collider2D>();
-
-        if (attackColliderFront == null) Debug.LogError("AttackColliderFront not found!");
-        if (attackColliderUp == null) Debug.LogError("AttackColliderUp not found!");
-        if (attackColliderDown == null) Debug.LogError("AttackColliderDown not found!");
 
         if (attackColliderFront) attackColliderFront.enabled = false;
         if (attackColliderUp) attackColliderUp.enabled = false;
@@ -65,26 +63,25 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
         if (isRespawning) return;
+
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
-        // 梯子に入っていて、↑または↓が押されたときだけClimb開始
+        // 梯子開始
         if (onLadder && !isClimbing && Mathf.Abs(moveY) > 0.1f)
         {
             isClimbing = true;
             rb.gravityScale = 0f;
-            rb.velocity = Vector2.zero; // 初期化
+            rb.velocity = Vector2.zero;
         }
 
         if (isClimbing)
         {
-            rb.gravityScale = 0f;
             rb.velocity = new Vector2(moveX * moveSpeed, moveY * climbSpeed);
 
-            // ジャンプで梯子から離れる
-            if (Input.GetKeyDown(KeyCode.Space))
+            // ★ ジャンプボタンのみで梯子から離脱
+            if (Input.GetButtonDown("Jump"))
             {
                 isClimbing = false;
                 onLadder = false;
@@ -94,17 +91,16 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // 通常移動
             rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
 
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            // ★ ジャンプボタンのみ
+            if (Input.GetButtonDown("Jump") && isGrounded)
             {
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 isGrounded = false;
             }
         }
 
-        // 梯子から出たとき（OnTriggerExit）でも保険的に解除
         if (!onLadder && isClimbing)
         {
             isClimbing = false;
@@ -115,13 +111,14 @@ public class PlayerController : MonoBehaviour
         Flip(moveX);
         UpdateAnimation(moveX, moveY);
 
-        if (Input.GetMouseButtonDown(1) && canAttack)
+        // 攻撃
+        if (Input.GetButtonDown("Attack") && canAttack)
         {
-            float verticalInput = Input.GetAxisRaw("Vertical");
+            float v = Input.GetAxisRaw("Vertical");
 
-            if (isGrounded || isClimbing) // 地上または梯子にいるとき
+            if (isGrounded || isClimbing)
             {
-                if (verticalInput > 0.1f)
+                if (v > 0.1f)
                 {
                     animator.SetTrigger("AttackUp");
                     StartCoroutine(EnableAttackCollider(attackColliderUp));
@@ -132,14 +129,14 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(EnableAttackCollider(attackColliderFront));
                 }
             }
-            else // 空中攻撃
+            else
             {
-                if (verticalInput > 0.1f)
+                if (v > 0.1f)
                 {
                     animator.SetTrigger("AirAttackUp");
                     StartCoroutine(EnableAttackCollider(attackColliderUp));
                 }
-                else if (verticalInput < -0.1f)
+                else if (v < -0.1f)
                 {
                     animator.SetTrigger("AirAttackDown");
                     StartCoroutine(EnableAttackCollider(attackColliderDown));
@@ -155,20 +152,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
     void UpdateState(float moveX)
     {
         if (!isGrounded)
         {
             float vy = rb.velocity.y;
-
-            if (vy > 1.5f)
-                CurrentState = PlayerState.JumpRise;
-            else if (vy < -1.5f)
-                CurrentState = PlayerState.JumpFall;
-            else
-                CurrentState = PlayerState.JumpMid;
+            if (vy > 1.5f) CurrentState = PlayerState.JumpRise;
+            else if (vy < -1.5f) CurrentState = PlayerState.JumpFall;
+            else CurrentState = PlayerState.JumpMid;
         }
         else if (Mathf.Abs(moveX) > 0.01f)
         {
@@ -184,12 +175,10 @@ public class PlayerController : MonoBehaviour
     {
         if (isClimbing)
         {
-            // 梯子アニメーションだけON
-            bool isClimbMoving = Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveY) > 0.1f;
-            animator.SetBool("LadderMove", isClimbMoving);
-            animator.SetBool("LadderIdle", !isClimbMoving);
+            bool moving = Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveY) > 0.1f;
+            animator.SetBool("LadderMove", moving);
+            animator.SetBool("LadderIdle", !moving);
 
-            // ジャンプ・移動アニメーションはOFF
             animator.SetBool("Moving", false);
             animator.SetBool("JumpRise", false);
             animator.SetBool("JumpMid", false);
@@ -197,7 +186,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // 通常アニメーション
             animator.SetBool("LadderMove", false);
             animator.SetBool("LadderIdle", false);
 
@@ -210,16 +198,9 @@ public class PlayerController : MonoBehaviour
 
     void Flip(float moveX)
     {
-        if (moveX > 0 && !facingRight)
+        if (moveX > 0 && !facingRight || moveX < 0 && facingRight)
         {
-            facingRight = true;
-            Vector3 scale = transform.localScale;
-            scale.x *= -1;
-            transform.localScale = scale;
-        }
-        else if (moveX < 0 && facingRight)
-        {
-            facingRight = false;
+            facingRight = !facingRight;
             Vector3 scale = transform.localScale;
             scale.x *= -1;
             transform.localScale = scale;
@@ -228,18 +209,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if ((collision.gameObject.CompareTag("Ground")) || (collision.gameObject.CompareTag("swap")))
-        {
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("swap"))
             isGrounded = true;
-        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground") || (collision.gameObject.CompareTag("swap")))
-        {
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("swap"))
             isGrounded = false;
-        }
     }
 
     private IEnumerator AttackCooldown()
@@ -249,47 +226,41 @@ public class PlayerController : MonoBehaviour
         canAttack = true;
     }
 
-    private IEnumerator EnableAttackCollider(Collider2D collider)
+    private IEnumerator EnableAttackCollider(Collider2D col)
     {
-        collider.enabled = true;
+        col.enabled = true;
         yield return new WaitForSeconds(0.2f);
-        collider.enabled = false;
+        col.enabled = false;
     }
 
-    // ★追加：当たり判定でHPを減らす
-    // ★Ladderの当たり判定
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Ladder"))
-        {
             onLadder = true;
-        }
 
-        if (collision.CompareTag("Attack") || collision.CompareTag("SwapEnemy"))
-        {
+        if (collision.CompareTag("Enemy") || collision.CompareTag("Attack") || collision.CompareTag("SwapEnemy"))
             TakeDamage(20);
-        }
+
         if (collision.CompareTag("Checkpoint"))
-        {
             respawnPoint = collision.transform;
-        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Ladder"))
-        {
             onLadder = false;
-        }
     }
 
-    // ★追加：ダメージ処理
-    private void TakeDamage(int damage)
+
+    public void TakeDamage(int damage)
     {
-        if (isRespawning) return;
+        if (isInvincible || isRespawning) return;
+
+        // ★ ここで即 無敵開始
+        isInvincible = true;
+        StartCoroutine(InvincibleRoutine());
 
         currentHP -= damage;
-        Debug.Log("Player took damage! HP: " + currentHP);
 
         if (currentHP <= 0)
         {
@@ -297,39 +268,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //リスポーン処理
+    private IEnumerator InvincibleRoutine()
+    {
+        yield return new WaitForSeconds(invincibleTime);
+        isInvincible = false;
+    }
+
     private IEnumerator Respawn()
     {
         isRespawning = true;
 
         yield return StartCoroutine(fadeScript.FadeOut());
-        // 操作を無効に（速度ゼロ、重力無効なども必要なら追加）
+
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
         GetComponent<Collider2D>().enabled = false;
 
-        animator.SetTrigger("Die"); // 死亡アニメ再生したい場合
+        animator.SetTrigger("Die");
+        yield return new WaitForSeconds(1f);
 
-        yield return new WaitForSeconds(1f); // 1秒待機
-
-        // 復帰処理
         transform.position = respawnPoint.position;
         currentHP = maxHP;
 
         rb.isKinematic = false;
         GetComponent<Collider2D>().enabled = true;
+
         yield return StartCoroutine(fadeScript.FadeIn());
         isRespawning = false;
     }
 
-    public float PerHP
-    {
-        get
-        {
-            float value = (float)currentHP / (float)maxHP;
-            return Mathf.Clamp(value, 0, 1);
-        }
-        private set { }
-    }
+    public float PerHP => Mathf.Clamp01((float)currentHP / maxHP);
 }
-

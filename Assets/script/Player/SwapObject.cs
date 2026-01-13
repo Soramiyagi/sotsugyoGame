@@ -4,7 +4,12 @@ public class SwapObject : MonoBehaviour
 {
     public float radius = 1.0f;
     public Vector3 offset;
-    public GameObject indicatorObject;  // ★追加：表示制御対象
+    public GameObject indicatorObject;
+
+    public GameObject preSwapEffectPrefab;  // 選択中エフェクト（A）
+    public GameObject swapEffectPrefab;     // 入れ替え瞬間エフェクト（B）
+
+    public GameObject activeSwapEffect;     // A の実体（Inspectorは空）
 
     private bool swapReady = false;
     private Vector3 swapObjPos;
@@ -12,70 +17,134 @@ public class SwapObject : MonoBehaviour
 
     void Update()
     {
-        // Fキーでswapオブジェクトの位置を保存
-        if (Input.GetKeyDown(KeyCode.F))
+        // ===== 入力判定（キーボード＋コントローラー）=====
+        bool targetInput =
+            Input.GetKeyDown(KeyCode.F) ||
+            Input.GetButtonDown("SwapTarget");
+
+        bool executeInput =
+            Input.GetKeyDown(KeyCode.E) ||
+            Input.GetButtonDown("SwapExecute");
+
+        // 入れ替え対象選択
+        if (targetInput)
         {
-            Vector3 center = transform.position + offset;
-            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius);
+            SelectSwapTarget();
+        }
 
-            nearestSwap = null;
-            float nearestDistance = float.MaxValue;
+        // 入れ替え実行
+        if (executeInput)
+        {
+            ExecuteSwap();
+        }
 
-            foreach (Collider2D collider in hitColliders)
+        // 選択中エフェクト更新
+        UpdatePreSwapEffect();
+    }
+
+    // ===== 入れ替え対象選択 =====
+    void SelectSwapTarget()
+    {
+        Vector3 center = transform.position + offset;
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius);
+
+        nearestSwap = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (Collider2D col in hitColliders)
+        {
+            if (col.CompareTag("swap") || col.CompareTag("SwapEnemy"))
             {
-                if (collider.CompareTag("swap") || collider.CompareTag("SwapEnemy"))
+                float dist = Vector2.Distance(transform.position, col.transform.position);
+                if (dist < nearestDistance)
                 {
-                    float distance = Vector2.Distance(transform.position, collider.transform.position);
-                    if (distance < nearestDistance)
-                    {
-                        nearestDistance = distance;
-                        nearestSwap = collider.gameObject;
-                    }
+                    nearestDistance = dist;
+                    nearestSwap = col.gameObject;
                 }
             }
-
-            if (nearestSwap != null)
-            {
-                swapObjPos = nearestSwap.transform.position;
-                swapReady = true;
-                Debug.Log("保存されたswapオブジェクト: " + nearestSwap.name);
-            }
-            else
-            {
-                swapReady = false;
-                Debug.Log("swapタグのオブジェクトが見つかりませんでした。");
-            }
         }
 
-        // Eキーで位置を入れ替え & 保存破棄
-        if (Input.GetKeyDown(KeyCode.E))
+        swapReady = nearestSwap != null;
+
+        if (swapReady)
         {
-            if (swapReady && nearestSwap != null)
-            {
-                Vector3 temp = transform.position + offset;
-                transform.position = swapObjPos;
-                nearestSwap.transform.position = temp;
-
-                Debug.Log("プレイヤーとswapオブジェクトの位置を入れ替えました。");
-
-                // 保存を破棄
-                nearestSwap = null;
-                swapReady = false;
-            }
-            else
-            {
-                Debug.Log("保存されたswapオブジェクトがありません。Fキーで先に保存してください。");
-            }
-        }
-
-        // ★ swapReady に応じて indicatorObject の表示切替
-        if (indicatorObject != null)
-        {
-            indicatorObject.SetActive(swapReady);
+            swapObjPos = nearestSwap.transform.position;
         }
     }
 
-    // 可視化（シーンビュー用）
+    // ===== 入れ替え実行 =====
+    void ExecuteSwap()
+    {
+        if (!swapReady || nearestSwap == null) return;
+
+        // 選択中エフェクト削除
+        if (activeSwapEffect != null)
+        {
+            Destroy(activeSwapEffect);
+            activeSwapEffect = null;
+        }
+
+        // 入れ替え瞬間エフェクト
+        if (swapEffectPrefab != null)
+        {
+            Vector3 effectPos = nearestSwap.transform.position;
+            effectPos.y += 1f;
+            Instantiate(swapEffectPrefab, effectPos, Quaternion.identity);
+        }
+
+        // 入れ替え処理
+        Vector3 temp = transform.position + offset;
+        transform.position = nearestSwap.transform.position;
+        nearestSwap.transform.position = temp;
+
+        StartCoroutine(SlowTimeFor(0.5f));
+
+        nearestSwap = null;
+        swapReady = false;
+    }
+
+    // ===== 選択中エフェクト追従 =====
+    void UpdatePreSwapEffect()
+    {
+        if (swapReady && nearestSwap != null)
+        {
+            Vector3 pos = nearestSwap.transform.position;
+
+            if (activeSwapEffect == null && preSwapEffectPrefab != null)
+            {
+                activeSwapEffect = Instantiate(preSwapEffectPrefab, pos, Quaternion.identity);
+            }
+
+            if (activeSwapEffect != null)
+            {
+                activeSwapEffect.transform.position = pos;
+            }
+        }
+        else
+        {
+            if (activeSwapEffect != null)
+            {
+                Destroy(activeSwapEffect);
+                activeSwapEffect = null;
+            }
+        }
+    }
+
+    // ===== スロー演出 =====
+    private System.Collections.IEnumerator SlowTimeFor(float duration)
+    {
+        Time.timeScale = 0.4f;
+        float start = Time.unscaledTime;
+
+        while (Time.unscaledTime < start + duration)
+        {
+            yield return null;
+        }
+
+        Time.timeScale = 1.0f;
+    }
+
+    // ===== デバッグ表示 =====
     void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
@@ -83,6 +152,4 @@ public class SwapObject : MonoBehaviour
         Gizmos.DrawWireSphere(center, radius);
     }
 }
-
-
 

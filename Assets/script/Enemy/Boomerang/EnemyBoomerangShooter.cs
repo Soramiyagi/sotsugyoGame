@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyBoomerangShooter : MonoBehaviour
 {
@@ -10,10 +11,14 @@ public class EnemyBoomerangShooter : MonoBehaviour
     private Transform player;
     private float cooldownTimer = 0f;
     private bool isInRange = false;
+    private bool isAttacking = false;
+
+    private Animator animator;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -27,38 +32,76 @@ public class EnemyBoomerangShooter : MonoBehaviour
         {
             if (!isInRange)
             {
-                // ★ 初めて範囲に入った瞬間：即撃つ！
-                ShootBoomerang();
-                cooldownTimer = 0f; // クールタイムリセット
+                TryShoot();
+                cooldownTimer = 0f;
             }
             else
             {
-                // ★ 範囲内にいる間：クールタイムで撃つ
                 cooldownTimer += Time.deltaTime;
                 if (cooldownTimer >= attackCooldown)
                 {
                     cooldownTimer = 0f;
-                    ShootBoomerang();
+                    TryShoot();
                 }
             }
         }
 
-        isInRange = currentlyInRange; // 状態更新
+        isInRange = currentlyInRange;
     }
 
-    void ShootBoomerang()
+    public void TryShoot()
     {
+        if (isAttacking) return;
+
+        isAttacking = true;
+        animator.SetTrigger("IsBoomerang");
+
+        // ★ 発射を0.1秒遅らせる
+        StartCoroutine(ShootAfterDelay(0.1f));
+    }
+
+    public void Shoot()
+    {
+        TryShoot();
+        Debug.Log("[Boomerang] Shoot() 呼ばれた");
+
+        if (firePoint == null)
+        {
+            Debug.LogError("[Boomerang] firePoint が null");
+            return;
+        }
+
+        if (boomerangPrefab == null)
+        {
+            Debug.LogError("[Boomerang] prefab が null");
+            return;
+        }
+
+        Debug.Log("[Boomerang] Instantiate 実行");
+
+        Instantiate(boomerangPrefab, firePoint.position, Quaternion.identity);
+    }
+
+    IEnumerator ShootAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
         GameObject boomerang = Instantiate(boomerangPrefab, firePoint.position, Quaternion.identity);
         BoomerangAttackFromEnemy script = boomerang.GetComponent<BoomerangAttackFromEnemy>();
 
         if (script == null)
         {
             Debug.LogError("BoomerangAttackFromEnemy がアタッチされていません！");
-            return;
+            yield break;
         }
 
         script.Initialize(player, this.transform);
     }
-}
 
+    // アニメーションイベントから呼ばれる
+    public void OnBoomerangAttackEnd()
+    {
+        isAttacking = false;
+    }
+}
 
