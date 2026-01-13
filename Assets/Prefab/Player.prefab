@@ -427,9 +427,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   jumpForce: 7
-  maxHP: 100
+  maxHP: 500
   attackCooldown: 0.5
   climbSpeed: 3
+  respawnPoint: {fileID: 0}
+  fadeScript: {fileID: 0}
+  invincibleTime: 0.5
 --- !u!114 &4269479534025660630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,4 +447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 5
   offset: {x: 0, y: 2, z: 0}
-  indicatorObject: {fileID: 0}
+  indicatorObject: {fileID: 3492086563444611750, guid: b2c431acb9b218143b8416e693b6c63c, type: 3}
+  preSwapEffectPrefab: {fileID: 3492086563444611750, guid: b2c431acb9b218143b8416e693b6c63c, type: 3}
+  swapEffectPrefab: {fileID: 9048577567042440302, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}
+  activeSwapEffect: {fileID: 9048577567042440302, guid: 40235f79954ba1b4380fb3871788bebe, type: 3}

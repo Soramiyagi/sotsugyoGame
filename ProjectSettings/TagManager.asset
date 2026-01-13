@@ -12,6 +12,7 @@ TagManager:
   - Ladder
   - Checkpoint
   - Enemy
+  - kill
   layers:
   - Default
   - TransparentFX
