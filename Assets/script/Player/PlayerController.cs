@@ -211,6 +211,10 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("swap"))
             isGrounded = true;
+    
+        if (collision.gameObject.CompareTag("kill"))
+            TakeDamage(maxHP);
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
