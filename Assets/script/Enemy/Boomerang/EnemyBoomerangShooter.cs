@@ -7,18 +7,21 @@ public class EnemyBoomerangShooter : MonoBehaviour
     public Transform firePoint;
     public float attackCooldown = 3f;
 
+    public float delayAnime = 0.1f;
+
     private Transform player;
     private bool isAttacking = false;
+    private Animator animator;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        animator = GetComponentInChildren<Animator>();
     }
 
-    // ★ Update は完全削除（自律AI禁止）
-    void Update() { }
+    void Update() { } // 自律AI禁止
 
-    // UtilityAI から直接呼ぶ唯一の入口
+    // UtilityAI から呼ぶ唯一の入口
     public void Shoot()
     {
         if (isAttacking) return;
@@ -41,14 +44,19 @@ public class EnemyBoomerangShooter : MonoBehaviour
             return;
         }
 
+        // ★ ここでアニメトリガー発火
+        if (animator != null)
+            animator.SetTrigger("IsBoomerang");
+
         StartCoroutine(ShootRoutine());
     }
 
     IEnumerator ShootRoutine()
     {
         isAttacking = true;
-
-        yield return new WaitForSeconds(0.1f);
+       
+        // アニメに合わせて少し遅延
+        yield return new WaitForSeconds(delayAnime);
 
         GameObject boomerang = Instantiate(
             boomerangPrefab,

@@ -12,7 +12,7 @@ public class AdvancedMeleeAction2D : AdvancedUtilityAction2D
     {
         if (ctx.IsAttacking) return;
 
-        if (ctx.DistanceToPlayer() <= ctx.meleeRange)
+        if (ctx.DistanceToPlayer() <= ctx.meleeRange * 1.5f)
         {
             Debug.Log("[AI] Melee Execute ŒÄ‚Ño‚µ");
             ctx.DoMeleeAttack();
@@ -23,7 +23,9 @@ public class AdvancedMeleeAction2D : AdvancedUtilityAction2D
     {
         public float Score(AdvancedEnemyContext2D ctx)
         {
-            return Mathf.Clamp01(1f - ctx.DistanceToPlayer() / ctx.meleeRange) * 1.6f;
+            return Mathf.Clamp01(
+                1f - ctx.DistanceToPlayer() / (ctx.meleeRange * 1.5f)
+            ) * 1.6f;
         }
     }
 

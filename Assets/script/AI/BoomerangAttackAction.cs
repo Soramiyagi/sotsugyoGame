@@ -23,6 +23,7 @@ public class BoomerangAttackAction2D : UtilityAction2D
 
             // Åö Ç±ÇÍÇí«â¡
             ctx.boomerangShooter.Shoot();
+
         }
     }
 }
