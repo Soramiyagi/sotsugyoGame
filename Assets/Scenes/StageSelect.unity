@@ -308,12 +308,12 @@ MonoBehaviour:
   - {fileID: 275304359}
   - {fileID: 1968535286}
   sceneNames:
-  - SampleScene
-  - SampleScene
-  - SampleScene
-  - SampleScene
-  - SampleScene
-  - SampleScene
+  - map1
+  - map2
+  - map3
+  - map4
+  - map5
+  - map6
   selectedMultiplier: 1.333
 --- !u!1 &225762191
 GameObject:
