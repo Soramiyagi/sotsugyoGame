@@ -220,6 +220,17 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("kill"))
             TakeDamage(maxHP);
+
+
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("COLLISION: " + collision.gameObject.name);
+        if (collision.gameObject.CompareTag("Enemy"))
+            TakeDamage(20);
+           
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -254,10 +265,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+     
+    
         if (collision.CompareTag("Ladder"))
             onLadder = true;
 
-        if (collision.CompareTag("Enemy") || collision.CompareTag("Attack") || collision.CompareTag("SwapEnemy"))
+        if (collision.CompareTag("Enemy") ||  collision.CompareTag("SwapEnemy"))
             TakeDamage(20);
 
         if (collision.CompareTag("Checkpoint"))

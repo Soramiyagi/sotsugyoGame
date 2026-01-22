@@ -306,8 +306,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: UMBRA
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5baf381ff40a7a94c8fac5ebc472e97b, type: 2}
-  m_sharedMaterial: {fileID: 2434188452957826586, guid: 5baf381ff40a7a94c8fac5ebc472e97b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 945be6f05bf6a82438b8f56f804ca819, type: 2}
+  m_sharedMaterial: {fileID: 2434188452957826586, guid: 945be6f05bf6a82438b8f56f804ca819, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -745,8 +745,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: GAME START
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5baf381ff40a7a94c8fac5ebc472e97b, type: 2}
-  m_sharedMaterial: {fileID: 2434188452957826586, guid: 5baf381ff40a7a94c8fac5ebc472e97b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 945be6f05bf6a82438b8f56f804ca819, type: 2}
+  m_sharedMaterial: {fileID: 2434188452957826586, guid: 945be6f05bf6a82438b8f56f804ca819, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
