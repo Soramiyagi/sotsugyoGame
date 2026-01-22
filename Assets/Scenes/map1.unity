@@ -21077,7 +21077,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8067875256647894383, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: maxHP
-      value: 200
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8067875256647894383, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: fadeScript

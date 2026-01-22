@@ -20557,7 +20557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8067875256647894383, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: maxHP
-      value: 200
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8067875256647894383, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: fadeScript
@@ -34618,13 +34618,25 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 184.2
       objectReference: {fileID: 0}
+    - target: {fileID: 7699136000393259773, guid: 6322016795c69144a8492567d3775323, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 160.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699136000393259773, guid: 6322016795c69144a8492567d3775323, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -170.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699136000393259773, guid: 6322016795c69144a8492567d3775323, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.66
+      objectReference: {fileID: 0}
     - target: {fileID: 7882007399859849584, guid: 6322016795c69144a8492567d3775323, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 864
+      value: 865.3
       objectReference: {fileID: 0}
     - target: {fileID: 7882007399859849584, guid: 6322016795c69144a8492567d3775323, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -135.98001
+      value: -137.8
       objectReference: {fileID: 0}
     - target: {fileID: 7882007399859849584, guid: 6322016795c69144a8492567d3775323, type: 3}
       propertyPath: m_LocalPosition.z
@@ -34661,6 +34673,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 546065938132751773, guid: 6322016795c69144a8492567d3775323, type: 3}
+    - {fileID: 4150515453861253110, guid: 6322016795c69144a8492567d3775323, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6322016795c69144a8492567d3775323, type: 3}
