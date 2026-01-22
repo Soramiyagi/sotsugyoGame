@@ -10799,11 +10799,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5010797460318067046, guid: a9ffe5a1d509fac448a36e20f700142a, type: 3}
       propertyPath: leftLimit
-      value: 500
+      value: 945
       objectReference: {fileID: 0}
     - target: {fileID: 5010797460318067046, guid: a9ffe5a1d509fac448a36e20f700142a, type: 3}
       propertyPath: rightLimit
-      value: 505
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 6436117040047607569, guid: a9ffe5a1d509fac448a36e20f700142a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36615,11 +36615,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5010797460318067046, guid: a9ffe5a1d509fac448a36e20f700142a, type: 3}
       propertyPath: leftLimit
-      value: 480
+      value: 930
       objectReference: {fileID: 0}
     - target: {fileID: 5010797460318067046, guid: a9ffe5a1d509fac448a36e20f700142a, type: 3}
       propertyPath: rightLimit
-      value: 485
+      value: 945
       objectReference: {fileID: 0}
     - target: {fileID: 6436117040047607569, guid: a9ffe5a1d509fac448a36e20f700142a, type: 3}
       propertyPath: m_LocalPosition.x
