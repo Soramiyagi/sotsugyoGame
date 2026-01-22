@@ -17,7 +17,7 @@ public class EnemyBase : MonoBehaviour
 
         if (animator == null)
         {
-            Debug.LogError($"{name}: Animator not found in children");
+            //Debug.LogError($"{name}: Animator not found in children");
         }
     }
 
