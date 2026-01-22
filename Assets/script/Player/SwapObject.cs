@@ -14,6 +14,9 @@ public class SwapObject : MonoBehaviour
     [Header("Swap Cooldown")]
     public float swapCooldown = 2.0f;       // 入れ替えクールタイム（秒）
 
+    [Header("UI")]
+    public GameObject swapUI;               // ★ 追加：入れ替え可能UI
+
     private bool swapReady = false;
     private Vector3 swapObjPos;
     private GameObject nearestSwap = null;
@@ -32,6 +35,10 @@ public class SwapObject : MonoBehaviour
                 isOnCooldown = false;
             }
         }
+
+        // ===== UI表示制御 =====
+        if (swapUI != null)
+            swapUI.SetActive(swapReady && !isOnCooldown);
 
         // ===== 入力判定（キーボード＋コントローラー）=====
         bool targetInput =
@@ -91,7 +98,7 @@ public class SwapObject : MonoBehaviour
     // ===== 入れ替え実行 =====
     void ExecuteSwap()
     {
-        if (isOnCooldown) return;                 // ★ クールタイム中は不可
+        if (isOnCooldown) return;
         if (!swapReady || nearestSwap == null) return;
 
         // 選択中エフェクト削除
@@ -174,5 +181,3 @@ public class SwapObject : MonoBehaviour
         Gizmos.DrawWireSphere(center, radius);
     }
 }
-
-
