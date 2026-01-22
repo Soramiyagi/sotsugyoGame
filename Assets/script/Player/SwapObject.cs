@@ -11,12 +11,28 @@ public class SwapObject : MonoBehaviour
 
     public GameObject activeSwapEffect;     // A の実体（Inspectorは空）
 
+    [Header("Swap Cooldown")]
+    public float swapCooldown = 2.0f;       // 入れ替えクールタイム（秒）
+
     private bool swapReady = false;
     private Vector3 swapObjPos;
     private GameObject nearestSwap = null;
 
+    private bool isOnCooldown = false;
+    private float cooldownTimer = 0f;
+
     void Update()
     {
+        // ===== クールタイム処理 =====
+        if (isOnCooldown)
+        {
+            cooldownTimer -= Time.deltaTime;
+            if (cooldownTimer <= 0f)
+            {
+                isOnCooldown = false;
+            }
+        }
+
         // ===== 入力判定（キーボード＋コントローラー）=====
         bool targetInput =
             Input.GetKeyDown(KeyCode.F) ||
@@ -26,7 +42,7 @@ public class SwapObject : MonoBehaviour
             Input.GetKeyDown(KeyCode.E) ||
             Input.GetButtonDown("SwapExecute");
 
-        // 入れ替え対象選択
+        // 入れ替え対象選択（※クールタイム中も選択できる仕様）
         if (targetInput)
         {
             SelectSwapTarget();
@@ -75,6 +91,7 @@ public class SwapObject : MonoBehaviour
     // ===== 入れ替え実行 =====
     void ExecuteSwap()
     {
+        if (isOnCooldown) return;                 // ★ クールタイム中は不可
         if (!swapReady || nearestSwap == null) return;
 
         // 選択中エフェクト削除
@@ -97,7 +114,12 @@ public class SwapObject : MonoBehaviour
         transform.position = nearestSwap.transform.position;
         nearestSwap.transform.position = temp;
 
+        // スロー演出
         StartCoroutine(SlowTimeFor(0.5f));
+
+        // ===== クールタイム開始 =====
+        isOnCooldown = true;
+        cooldownTimer = swapCooldown;
 
         nearestSwap = null;
         swapReady = false;
@@ -152,4 +174,5 @@ public class SwapObject : MonoBehaviour
         Gizmos.DrawWireSphere(center, radius);
     }
 }
+
 

@@ -34,7 +34,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Cast
-  m_Speed: 1
+  m_Speed: 2.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 4717848669451421849}
@@ -208,7 +208,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Ranged
+  - m_Name: IsBoomerang
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -360,7 +360,7 @@ AnimatorStateMachine:
     m_Position: {x: 200, y: -90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5360324063918002377}
-    m_Position: {x: 340, y: 40, z: 0}
+    m_Position: {x: 490, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7424406582177607704}
     m_Position: {x: 520, y: -40, z: 0}
@@ -372,7 +372,7 @@ AnimatorStateMachine:
     m_Position: {x: 20, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6297427740756195321}
-    m_Position: {x: 210, y: 110, z: 0}
+    m_Position: {x: 170, y: 160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1861710162898194093}
     m_Position: {x: 445, y: 455, z: 0}
@@ -534,7 +534,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Ranged
+    m_ConditionEvent: IsBoomerang
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6297427740756195321}
@@ -665,7 +665,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Ranged
+    m_ConditionEvent: IsBoomerang
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6297427740756195321}

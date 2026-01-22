@@ -52,6 +52,7 @@ public class AdvancedEnemyContext2D : EnemyBase
     public float DistanceToPlayer()
     {
         if (player == null) return float.MaxValue;
+        Debug.Log(Vector2.Distance(transform.position, player.position));
         return Vector2.Distance(transform.position, player.position);
     }
 
@@ -82,12 +83,7 @@ public class AdvancedEnemyContext2D : EnemyBase
         s.x = Mathf.Abs(s.x) * dir;
         flipPivot.localScale = s;
 
-        if (firePoint != null)
-        {
-            Vector3 p = firePoint.localPosition;
-            p.x = Mathf.Abs(p.x) * (facingLeft ? -1f : 1f);
-            firePoint.localPosition = p;
-        }
+
     }
 
     // ===== ãﬂê⁄çUåÇ =====
@@ -130,8 +126,7 @@ public class AdvancedEnemyContext2D : EnemyBase
         isAttacking = true;
         rb.velocity = new Vector2(0f, rb.velocity.y);
 
-        if (animator != null)
-            animator.SetTrigger("Ranged");
+       
 
         boomerangShooter.Shoot();
         StartCoroutine(RangedCooldown());

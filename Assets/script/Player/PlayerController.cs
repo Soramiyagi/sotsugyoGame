@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
 
+    [Header("Jump Cooldown")]
+    public float jumpCooldown = 1f;
+    private bool canJump = true;
+
     public int maxHP = 100;
     private int currentHP;
 
@@ -44,8 +48,6 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
-   
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -63,12 +65,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        
         if (isRespawning) return;
 
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
-        // 梯子開始
+        // ===== 梯子開始 =====
         if (onLadder && !isClimbing && Mathf.Abs(moveY) > 0.1f)
         {
             isClimbing = true;
@@ -80,24 +83,27 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(moveX * moveSpeed, moveY * climbSpeed);
 
-            // ★ ジャンプボタンのみで梯子から離脱
-            if (Input.GetButtonDown("Jump"))
+            // ★ 梯子ジャンプ（クールタイムあり）
+            if (Input.GetButtonDown("Jump") && canJump)
             {
                 isClimbing = false;
                 onLadder = false;
                 rb.gravityScale = 1f;
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                StartCoroutine(JumpCooldown());
             }
         }
         else
         {
             rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
 
-            // ★ ジャンプボタンのみ
-            if (Input.GetButtonDown("Jump") && isGrounded)
+            // ★ 地上ジャンプ（クールタイムあり）
+            if (Input.GetButtonDown("Jump") && isGrounded && canJump)
             {
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 isGrounded = false;
+                StartCoroutine(JumpCooldown());
+                canJump = false;
             }
         }
 
@@ -111,7 +117,7 @@ public class PlayerController : MonoBehaviour
         Flip(moveX);
         UpdateAnimation(moveX, moveY);
 
-        // 攻撃
+        // ===== 攻撃 =====
         if (Input.GetButtonDown("Attack") && canAttack)
         {
             float v = Input.GetAxisRaw("Vertical");
@@ -157,7 +163,7 @@ public class PlayerController : MonoBehaviour
         if (!isGrounded)
         {
             float vy = rb.velocity.y;
-            if (vy > 1.5f) CurrentState = PlayerState.JumpRise;
+            if (vy > 2f) CurrentState = PlayerState.JumpRise;
             else if (vy < -1.5f) CurrentState = PlayerState.JumpFall;
             else CurrentState = PlayerState.JumpMid;
         }
@@ -211,6 +217,9 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("swap"))
             isGrounded = true;
+
+        if (collision.gameObject.CompareTag("kill"))
+            TakeDamage(maxHP);
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -224,6 +233,16 @@ public class PlayerController : MonoBehaviour
         canAttack = false;
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
+    }
+
+    private IEnumerator JumpCooldown()
+    {
+       
+        canJump = false;
+        yield return new WaitForSeconds(jumpCooldown);
+       
+        canJump = true;
+    
     }
 
     private IEnumerator EnableAttackCollider(Collider2D col)
@@ -251,21 +270,17 @@ public class PlayerController : MonoBehaviour
             onLadder = false;
     }
 
-
     public void TakeDamage(int damage)
     {
         if (isInvincible || isRespawning) return;
 
-        // ★ ここで即 無敵開始
         isInvincible = true;
         StartCoroutine(InvincibleRoutine());
 
         currentHP -= damage;
 
         if (currentHP <= 0)
-        {
             StartCoroutine(Respawn());
-        }
     }
 
     private IEnumerator InvincibleRoutine()

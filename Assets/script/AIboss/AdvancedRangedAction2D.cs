@@ -32,7 +32,8 @@ public class AdvancedRangedAction2D : AdvancedUtilityAction2D
         public float Score(AdvancedEnemyContext2D ctx)
         {
             float diff = ctx.player.position.y - ctx.transform.position.y;
-            return Mathf.Clamp01(diff / 3f) * 1.3f;
+            // Šî€‚ğ 0.7 ‚É‚µ‚ÄA‚‚¢ê‡‚Í +0.5 ‚­‚ç‚¢‚Ü‚Å•â³
+            return Mathf.Clamp01(1.1f + diff / 3f);
         }
     }
 }
