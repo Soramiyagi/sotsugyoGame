@@ -71,3 +71,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/Dark UI/Font/Kinkakuji-Normal SDF.asset
+Assets/Dark UI/Font/Kinkakuji-Normal SDF.asset.meta
+Assets/Dark UI/Font/Kinkakuji-Normal.ttf
+Assets/Dark UI/Font/Kinkakuji-Normal.ttf.meta

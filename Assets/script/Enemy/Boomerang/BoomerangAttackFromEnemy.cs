@@ -28,7 +28,7 @@ public class BoomerangAttackFromEnemy : MonoBehaviour
         Vector2 direction = (player.position - transform.position);
         direction.y += 2f; //  Yï˚å¸ï‚ê≥
         direction = direction.normalized;
-
+        Debug.Log("A");
         rb.velocity = direction * speed;
     }
 
