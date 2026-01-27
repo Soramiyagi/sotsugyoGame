@@ -20603,7 +20603,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5387548631409170651, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: m_SortingOrder
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8067875256647894383, guid: 66ccb841f6328ba45ba2c556d5f197f0, type: 3}
       propertyPath: maxHP
@@ -35072,8 +35072,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: STAGE CLEAR
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 945be6f05bf6a82438b8f56f804ca819, type: 2}
-  m_sharedMaterial: {fileID: 2434188452957826586, guid: 945be6f05bf6a82438b8f56f804ca819, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5baf381ff40a7a94c8fac5ebc472e97b, type: 2}
+  m_sharedMaterial: {fileID: 2434188452957826586, guid: 5baf381ff40a7a94c8fac5ebc472e97b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -35136,7 +35136,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1821479065
